@@ -1,0 +1,23 @@
+mysql -u root -p
+
+create database repartidora_agua;
+use repartidora_agua;
+
+CREATE TABLE Usuario (idUsuario int PRIMARY KEY auto increment, nombre VARCHAR(100) NOT NULL, correo VARCHAR(100) UNIQUE NOT NULL, contrasena VARCHAR(255) NOT NULL, rol ENUM('OPERADOR', 'REPARTIDOR') NOT NULL, activo BOOLEAN DEFAULT TRUE);
+
+CREATE TABLE Operador ( idOperador INT PRIMARY KEY AUTO_INCREMENT, idUsuario INT NOT NULL, horario VARCHAR(100), FOREIGN KEY (idUsuario) REFERENCES Usuario (idUsuario) );
+
+CREATE TABLE Camion ( idCamion INT PRIMARY KEY AUTO_INCREMENT, capacidad_maxima INT DEFAULT 100 );
+
+CREATE TABLE Repartidor ( idRepartidor INT PRIMARY KEY AUTO_INCREMENT, nombre_completo VARCHAR(100) NOT NULL, telefono VARCHAR(10) NOT NULL, idCamion INT, FOREIGN KEY (idCamion) REFERENCES Camion (idCamion) );
+
+
+CREATE TABLE Zona ( idZona INT PRIMARY KEY AUTO_INCREMENT, nombre VARCHAR(100) NOT NULL, coo rdenadas_x VARCHAR(50) NOT NULL, coordenadas_y VARCHAR(50) );
+
+CREATE TABLE Colonia ( idColonia INT PRIMARY KEY AUTO_INCREMENT, nombre VARCHAR(100) NOT NULL, idZona INT NOT NULL, FOREIGN KEY (idZona) REFERENCES Zona (idZona) );
+
+CREATE TABLE Calle ( idCalle INT PRIMARY KEY AUTO_INCREMENT, nombre VARCHAR(100) NOT NULL, d escripcion VARCHAR(200), idColonia INT NOT NULL, FOREIGN KEY (idColonia) REFERENCES Colonia (idColonia) );
+
+
+CREATE TABLE Pedido ( idPedido INT PRIMARY KEY AUTO_INCREMENT, idZona INT NOT NULL, cantidad_garrafones INT NOT NULL, fecha DATE DEFAULT CURRENT_DATE, estado ENUM('PENDIENTE', 'ENTREGADO') NOT NULL, prioridad BOO LEAN DEFAULT FALSE, idRepartidor INT, idOperador INT, FOREIGN KEY (idZona) REFERENCES Zona (idZona), FOREIGN KEY (idRepartidor) REFERENCES Repartidor (idRepartidor), FOREIGN KEY (idOperador) REFERENCES Operador (idOperador) );
+
