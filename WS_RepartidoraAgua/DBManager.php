@@ -7,11 +7,12 @@
         private $pass;
         private $port;
 
-        public function __construct($host, $user, $pass, $port) {
-            $this->host = $host;
-            $this->user = $user;
-            $this->pass = $pass;
-            $this->port = $port;
+        public function __construct() {
+            $this->db = "repartidora_agua";
+            $this->host = "localhost";
+            $this->user = "root";
+            $this->pass = null;
+            $this->port = 3306;
         }
 
         public function open(){
@@ -25,7 +26,6 @@
             mysqli_close($link);
         }
 
-        
 
     }
 
