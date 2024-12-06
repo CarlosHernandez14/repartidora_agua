@@ -9,7 +9,7 @@ CREATE TABLE Operador ( idOperador INT PRIMARY KEY AUTO_INCREMENT, idUsuario INT
 
 CREATE TABLE Camion ( idCamion INT PRIMARY KEY AUTO_INCREMENT, capacidad_maxima INT DEFAULT 100 );
 
-CREATE TABLE Repartidor ( idRepartidor INT PRIMARY KEY AUTO_INCREMENT, nombre_completo VARCHAR(100) NOT NULL, telefono VARCHAR(10) NOT NULL, idCamion INT, FOREIGN KEY (idCamion) REFERENCES Camion (idCamion) );
+CREATE TABLE Repartidor ( idRepartidor INT PRIMARY KEY AUTO_INCREMENT, nombre_completo VARCHAR(100) NOT NULL, telefono VARCHAR(10) NOT NULL, idCamion INT, idUsuario INT NOT NULL, FOREIGN KEY (idCamion) REFERENCES Camion (idCamion), FOREIGN KEY (idUsuario) REFERENCES Usuario (idUsuario) );
 
 
 CREATE TABLE Zona ( idZona INT PRIMARY KEY AUTO_INCREMENT, nombre VARCHAR(100) NOT NULL, coo rdenadas_x VARCHAR(50) NOT NULL, coordenadas_y VARCHAR(50) );
