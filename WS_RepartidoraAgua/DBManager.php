@@ -383,6 +383,144 @@
 
         }
 
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+
+        // FUNCIONES PARA MANEJO DE LA TABLA CAMION
+
+        // Funcion para obtener todos los camiones
+        public function getCamiones(){
+            $link = $this->open();
+            $query = "SELECT * FROM camion";
+            $result = mysqli_query($link, $query);
+            
+            if($result){
+                $camiones = [];
+                while($row = mysqli_fetch_assoc($result)){
+                    $camiones[] = $row;
+                }
+                $this->close($link);
+                
+                return $camiones;
+            } else {
+                $this->close($link);
+                throw new Exception("Error al obtener los camiones");
+            }
+
+        }
+
+        // Funcion para obtener un camion por su id
+        public function getCamionById($id){
+            $link = $this->open();
+            $query = "SELECT * FROM camion WHERE idCamion = $id";
+            $result = mysqli_query($link, $query);
+            
+            if($result){
+                $camion = mysqli_fetch_assoc($result);
+                $this->close($link);
+                
+                return $camion;
+            } else {
+                $this->close($link);
+                throw new Exception("Error al obtener el camion");
+            }
+
+        }
+
+
+        // Funcion para insertar un camion
+        public function createCamion($capacidad_maxima, $placas, $modelo, $marca) {
+            $link = $this->open();
+            $query = "INSERT INTO camion (capacidad_maxima, placas, modelo, marca) VALUES ($capacidad_maxima, '$placas', '$modelo', '$marca')";
+            $result = mysqli_query($link, $query);
+            
+            if($result){
+                // En caso de que lo haya creado, buscamos el camion para obtener su id
+                $query = "SELECT * FROM camion WHERE placas = '$placas'";
+                $result = mysqli_query($link, $query);
+                $camion = mysqli_fetch_assoc($result);
+                $this->close($link);
+
+                // Retornamos el id del camion
+                return $camion['idCamion'];
+            } else {
+                $this->close($link);
+                throw new Exception("Error al insertar el camion");
+            }
+        }
+
+        // Funcion para actualizar un camion
+        public function updateCamion($id, $placas = null, $modelo = null, $marca = null) {
+            $link = $this->open();
+
+            // Verificamos que el camion exista primero
+            $query = "SELECT * FROM camion WHERE idCamion = $id";
+            $result = mysqli_query($link, $query);
+
+            if(mysqli_num_rows($result) == 0){
+                $this->close($link);
+                throw new Exception("El camion no existe");
+            }
+
+            $camion = mysqli_fetch_assoc($result);
+
+            if($placas == null){
+                $placas = $camion['placas'];
+            }
+
+            if($modelo == null){
+                $modelo = $camion['modelo'];
+            }
+
+            if($marca == null){
+                $marca = $camion['marca'];
+            }
+
+            $query = "UPDATE camion SET placas = '$placas', modelo = '$modelo', marca = '$marca' WHERE idCamion = $id";
+            $result = mysqli_query($link, $query);
+            
+            if($result){
+                $this->close($link);
+                
+                // En caso de que se actualice correctamente, retornamos el id del camion actualizado
+                return $id;
+            } else {
+                $this->close($link);
+                throw new Exception("Error al actualizar el camion");
+            }
+
+        } 
+
+        // Funcion para eliminar un camion
+        public function deleteCamion($id){
+            $link = $this->open();
+
+            // Verificamos que el camion exista primero
+            $query = "SELECT * FROM camion WHERE idCamion = $id";
+            $result = mysqli_query($link, $query);
+
+            if(mysqli_num_rows($result) == 0){
+                $this->close($link);
+                throw new Exception("El camion no existe");
+            }
+
+            $query = "DELETE FROM camion WHERE idCamion = $id";
+            $result = mysqli_query($link, $query);
+            
+            if($result){
+                $this->close($link);
+                
+                // En caso de que se elimine correctamente, retornamos el id del camion eliminado
+                return $id;
+            } else {
+                $this->close($link);
+                throw new Exception("Error al eliminar el camion");
+            }
+
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 
 
     }
