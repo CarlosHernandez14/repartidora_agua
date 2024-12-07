@@ -531,6 +531,113 @@
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
 
+        // FUNCIONES PARA MANEJO DE LA TABLA CALLE
+        // Funcion para obtener todas las calles
+        public function getCalles(){
+            $link = $this->open();
+            $query = "SELECT * FROM calle";
+            $result = mysqli_query($link, $query);
+            
+            if($result){
+                $calles = [];
+                while($row = mysqli_fetch_assoc($result)){
+                    $calles[] = $row;
+                }
+                $this->close($link);
+                
+                return $calles;
+            } else {
+                $this->close($link);
+                throw new Exception("Error al obtener las calles");
+            }
+
+        }
+
+        // Funcion para obtener una calle por su id
+        public function getCalleById($id){
+            $link = $this->open();
+            $query = "SELECT * FROM calle WHERE idCalle = $id";
+            $result = mysqli_query($link, $query);
+            
+            if($result){
+                $calle = mysqli_fetch_assoc($result);
+                $this->close($link);
+                
+                return $calle;
+            } else {
+                $this->close($link);
+                throw new Exception("Error al obtener la calle");
+            }
+
+        }
+
+        // Funcion para insertar una calle 
+        public function createCalle($nombre, $descripcion = null, $idColonia) {
+            $link = $this->open();
+            $query = "INSERT INTO calle (nombre, descripcion, idColonia) VALUES ('$nombre', '$descripcion', $idColonia)";
+
+            if(is_null($descripcion)){
+                $query = "INSERT INTO calle (nombre, idColonia) VALUES ('$nombre', $idColonia)";
+            }
+
+            $result = mysqli_query($link, $query);
+            
+            if($result){
+                // En caso de que lo haya creado, buscamos la calle para obtener su id
+                $query = "SELECT * FROM calle WHERE nombre = '$nombre'";
+                $result = mysqli_query($link, $query);
+                $calle = mysqli_fetch_assoc($result);
+                $this->close($link);
+
+                // Retornamos el id de la calle
+                return $calle['idCalle'];
+            } else {
+                $this->close($link);
+                throw new Exception("Error al insertar la calle");
+            }
+        }
+
+        // Funcion para actualizar una calle
+        public function updateCalle($id, $nombre = null, $descripcion = null) {
+            $link = $this->open();
+
+            // Verificamos que la calle exista primero
+            $query = "SELECT * FROM calle WHERE idCalle = $id";
+            $result = mysqli_query($link, $query);
+
+            if(mysqli_num_rows($result) == 0){
+                $this->close($link);
+                throw new Exception("La calle no existe");
+            }
+
+            $calle = mysqli_fetch_assoc($result);
+
+            if($nombre == null){
+                $nombre = $calle['nombre'];
+            }
+
+            if($descripcion == null){
+                $descripcion = $calle['descripcion'];
+            }
+
+            $query = "UPDATE calle SET nombre = '$nombre', descripcion = '$descripcion' WHERE idCalle = $id";
+            $result = mysqli_query($link, $query);
+            
+            if($result){
+                $this->close($link);
+                
+                // En caso de que se actualice correctamente, retornamos el id de la calle actualizada
+                return $id;
+            } else {
+                $this->close($link);
+                throw new Exception("Error al actualizar la calle");
+            }
+
+        }
+
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 
 
