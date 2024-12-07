@@ -30,20 +30,20 @@
             case 'POST':
                 $data = json_decode(file_get_contents('php://input'), true);
 
-                if (!isset($data['capacidad_maxima']) || !isset($data['modelo']) || !isset($data['marca']) || !isset($data['placas'])) {
+                if (!isset($data['modelo']) || !isset($data['marca']) || !isset($data['placas'])) {
                     throw new Exception("Faltan datos");
                 }
 
                 $placas = $data['placas'];
                 $modelo = $data['modelo'];
                 $marca = $data['marca'];
-                $capacidad_maxima = $data['capacidad_maxima'];
+                $capacidad_maxima = $data['capacidad_maxima'] ?? null;
 
                 $camion = $db->createCamion($capacidad_maxima, $placas, $modelo, $marca);
                 echo json_encode([
                     'OK' => true,
                     'message' => 'Camion creado correctamente',
-                    'data' => $camion
+                    'data' => strval($camion)
                 ]);
                 break;
             case 'PUT':
@@ -57,13 +57,12 @@
                 $placas = $data['placas'] ?? null;
                 $modelo = $data['modelo'] ?? null;
                 $marca = $data['marca'] ?? null;
-                $anio = $data['anio'] ?? null;
 
-                //$camion = $db->updateCamion($idCamion, $placas, $modelo, $marca, $anio);
+                $camion = $db->updateCamion($idCamion, $placas, $modelo, $marca);
                 echo json_encode([
                     'OK' => true,
                     'message' => 'Camion actualizado correctamente',
-                    'data' => $camion
+                    'data' => strval($camion)
                 ]);
                 break;
             case 'DELETE':
@@ -80,7 +79,7 @@
                 echo json_encode([
                     'OK' => true,
                     'message' => 'Camion eliminado correctamente',
-                    'data' => $camion
+                    'data' => strval($idCamion)
                 ]);
 
                 break;

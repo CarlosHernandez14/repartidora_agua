@@ -414,6 +414,13 @@
             $query = "SELECT * FROM camion WHERE idCamion = $id";
             $result = mysqli_query($link, $query);
             
+            if(!(mysqli_num_rows($result) > 0)) {
+                $this->close($link);
+                throw new Exception("El camion no existe");
+                return;
+            }
+
+            // Si hay un resultado o el numero de camiones es mayor a 0
             if($result){
                 $camion = mysqli_fetch_assoc($result);
                 $this->close($link);
@@ -428,9 +435,13 @@
 
 
         // Funcion para insertar un camion
-        public function createCamion($capacidad_maxima, $placas, $modelo, $marca) {
+        public function createCamion($capacidad_maxima = null, $placas, $modelo, $marca) {
             $link = $this->open();
             $query = "INSERT INTO camion (capacidad_maxima, placas, modelo, marca) VALUES ($capacidad_maxima, '$placas', '$modelo', '$marca')";
+
+            if(is_null($capacidad_maxima)){
+                $query = "INSERT INTO camion (placas, modelo, marca) VALUES ('$placas', '$modelo', '$marca')";
+            }
             $result = mysqli_query($link, $query);
             
             if($result){
