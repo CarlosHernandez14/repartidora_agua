@@ -30,14 +30,16 @@
             case 'POST':
                 $data = json_decode(file_get_contents('php://input'), true);
 
-                if (!isset($data['nombre']) || !isset($data['longitud']) || !isset($data['latitud'])) {
+                if (!isset($data['nombre']) || !isset($data['idColonia'])) {
                     throw new Exception("Faltan datos");
                 }
 
                 $nombre = $data['nombre'];
-                $longitud = $data['longitud'];
-                $latitud = $data['latitud'];
-                $calle = $db->createCalle($nombre, $longitud, $latitud);
+                $descripcion = $data['descripcion'] ?? null;
+                $idColonia = $data['idColonia'];
+
+                $calle = $db->createCalle($nombre, $descripcion, $idColonia);
+
                 echo json_encode([
                     'OK' => true,
                     'message' => 'Calle creada correctamente',
@@ -53,10 +55,10 @@
 
                 $idCalle = $data['idCalle'];
                 $nombre = $data['nombre'] ?? null;
-                $longitud = $data['longitud'] ?? null;
-                $latitud = $data['latitud'] ?? null;
+                $descripcion = $data['descripcion'] ?? null;
 
-                $calle = $db->updateCalle($idCalle, $nombre, $longitud, $latitud);
+                $calle = $db->updateCalle($idCalle, $nombre, $descripcion);
+                
                 echo json_encode([
                     'OK' => true,
                     'message' => 'Calle actualizada correctamente',

@@ -638,6 +638,258 @@
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
 
+        // FUNCIONES PARA MANEJO DE LA TABLA COLONIA
+
+        // Funcion para obtener todas las colonias
+        public function getColonias(){
+            $link = $this->open();
+            $query = "SELECT * FROM colonia";
+            $result = mysqli_query($link, $query);
+            
+            if($result){
+                $colonias = [];
+                while($row = mysqli_fetch_assoc($result)){
+                    $colonias[] = $row;
+                }
+                $this->close($link);
+                
+                return $colonias;
+            } else {
+                $this->close($link);
+                throw new Exception("Error al obtener las colonias");
+            }
+
+        }
+
+        // Funcion para obtener una colonia por su id
+        public function getColoniaById($id){
+            $link = $this->open();
+            $query = "SELECT * FROM colonia WHERE idColonia = $id";
+            $result = mysqli_query($link, $query);
+            
+            if($result){
+                $colonia = mysqli_fetch_assoc($result);
+                $this->close($link);
+                
+                return $colonia;
+            } else {
+                $this->close($link);
+                throw new Exception("Error al obtener la colonia");
+            }
+
+        }
+
+        // Funcion para obtener las colonias por el idZona
+        public function getColoniasByZona($idZona){
+            $link = $this->open();
+            $query = "SELECT * FROM colonia WHERE idZona = $idZona";
+            $result = mysqli_query($link, $query);
+            
+            if($result){
+                $colonias = [];
+                while($row = mysqli_fetch_assoc($result)){
+                    $colonias[] = $row;
+                }
+                $this->close($link);
+                
+                return $colonias;
+            } else {
+                $this->close($link);
+                throw new Exception("Error al obtener las colonias");
+            }
+
+        }
+
+
+        // Funcion para insertar una colonia
+        public function createColonia($nombre, $idZona) {
+            $link = $this->open();
+            $query = "INSERT INTO colonia (nombre, idZona) VALUES ('$nombre', $idZona)";
+            $result = mysqli_query($link, $query);
+            
+            if($result){
+                // En caso de que lo haya creado, buscamos la colonia para obtener su id
+                $query = "SELECT * FROM colonia WHERE nombre = '$nombre'";
+                $result = mysqli_query($link, $query);
+                $colonia = mysqli_fetch_assoc($result);
+                $this->close($link);
+
+                // Retornamos el id de la colonia
+                return $colonia['idColonia'];
+            } else {
+                $this->close($link);
+                throw new Exception("Error al insertar la colonia");
+            }
+        }
+
+        // Funcion para actualizar una colonia
+        public function updateColonia($id, $nombre = null) {
+            $link = $this->open();
+
+            // Verificamos que la colonia exista primero
+            $query = "SELECT * FROM colonia WHERE idColonia = $id";
+            $result = mysqli_query($link, $query);
+
+            if(mysqli_num_rows($result) == 0){
+                $this->close($link);
+                throw new Exception("La colonia no existe");
+            }
+
+            $colonia = mysqli_fetch_assoc($result);
+
+            if($nombre == null){
+                $nombre = $colonia['nombre'];
+            }
+
+            $query = "UPDATE colonia SET nombre = '$nombre' WHERE idColonia = $id";
+            $result = mysqli_query($link, $query);
+            
+            if($result){
+                $this->close($link);
+                
+                // En caso de que se actualice correctamente, retornamos el id de la colonia actualizada
+                return $id;
+            } else {
+                $this->close($link);
+                throw new Exception("Error al actualizar la colonia");
+            }
+
+        }
+
+        // Funcion para eliminar una colonia
+        public function deleteColonia($id){
+            $link = $this->open();
+
+            // Verificamos que la colonia exista primero
+            $query = "SELECT * FROM colonia WHERE idColonia = $id";
+            $result = mysqli_query($link, $query);
+
+            if(mysqli_num_rows($result) == 0){
+                $this->close($link);
+                throw new Exception("La colonia no existe");
+            }
+
+            $query = "DELETE FROM colonia WHERE idColonia = $id";
+            $result = mysqli_query($link, $query);
+            
+            if($result){
+                $this->close($link);
+                
+                // En caso de que se elimine correctamente, retornamos el id de la colonia eliminada
+                return $id;
+            } else {
+                $this->close($link);
+                throw new Exception("Error al eliminar la colonia");
+            }
+
+        }
+
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+
+        // FUNCIONES PARA MANEJO DE LA TABLA ZONA
+
+        // Funcion para obtener todas las zonas
+        public function getZonas(){
+            $link = $this->open();
+            $query = "SELECT * FROM zona";
+            $result = mysqli_query($link, $query);
+            
+            if($result){
+                $zonas = [];
+                while($row = mysqli_fetch_assoc($result)){
+                    $zonas[] = $row;
+                }
+                $this->close($link);
+                
+                return $zonas;
+            } else {
+                $this->close($link);
+                throw new Exception("Error al obtener las zonas");
+            }
+
+        }
+
+        // Funcion para obtener una zona por su id
+        public function getZonaById($id){
+            $link = $this->open();
+            $query = "SELECT * FROM zona WHERE idZona = $id";
+            $result = mysqli_query($link, $query);
+            
+            if($result){
+                $zona = mysqli_fetch_assoc($result);
+                $this->close($link);
+                
+                return $zona;
+            } else {
+                $this->close($link);
+                throw new Exception("Error al obtener la zona");
+            }
+
+        }
+
+        // Funcion para insertar una zona
+        public function createZona($nombre, $coordenadas_x, $coordenadas_y) {
+            $link = $this->open();
+            $query = "INSERT INTO zona (nombre, coordenadas_x, coordenadas_y) VALUES ('$nombre', '$coordenadas_x', '$coordenadas_y')";
+            $result = mysqli_query($link, $query);
+            
+            if($result){
+                // En caso de que lo haya creado, buscamos la zona para obtener su id
+                $query = "SELECT * FROM zona WHERE nombre = '$nombre'";
+                $result = mysqli_query($link, $query);
+                $zona = mysqli_fetch_assoc($result);
+                $this->close($link);
+
+                // Retornamos el id de la zona
+                return $zona['idZona'];
+            } else {
+                $this->close($link);
+                throw new Exception("Error al insertar la zona");
+            }
+        }
+
+        // Funcion para actualizar una zona
+        public function updateZona($id, $nombre = null, $coordenadas_x = null, $coordenadas_y = null) {
+            $link = $this->open();
+
+            // Verificamos que la zona exista primero
+            $query = "SELECT * FROM zona WHERE idZona = $id";
+            $result = mysqli_query($link, $query);
+
+            if(mysqli_num_rows($result) == 0){
+                $this->close($link);
+                throw new Exception("La zona no existe");
+            }
+
+            $zona = mysqli_fetch_assoc($result);
+
+            if($nombre == null){
+                $nombre = $zona['nombre'];
+            }
+
+            if($coordenadas_x == null){
+                $coordenadas_x = $zona['coordenadas_x'];
+            }
+
+            if($coordenadas_y == null){
+                $coordenadas_y = $zona['coordenadas_y'];
+            }
+
+            $query = "UPDATE zona SET nombre = '$nombre', coordenadas_x = '$coordenadas_x', coordenadas_y = '$coordenadas_y' WHERE idZona = $id";
+            $result = mysqli_query($link, $query);
+            
+            if($result){
+                $this->close($link);
+                
+                // En caso de que se actualice correctamente, retornamos el id de la zona actualizada
+                return $id;
+            } else {
+                $this->close($link);
+                throw new Exception("Error al actualizar la zona");
+            }
+
+        }
 
 
 
