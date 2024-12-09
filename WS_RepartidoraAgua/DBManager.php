@@ -910,6 +910,183 @@
 
         }
 
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+
+        // FUNCIONES PARA MANEJO DE LA TABLA PEDIDO
+        // Funcion para obtener todos los pedidos
+
+        public function getPedidos(){
+            $link = $this->open();
+            $query = "SELECT * FROM pedido";
+            $result = mysqli_query($link, $query);
+            
+            if($result){
+                $pedidos = [];
+                while($row = mysqli_fetch_assoc($result)){
+                    $pedidos[] = $row;
+                }
+                $this->close($link);
+                
+                return $pedidos;
+            } else {
+                $this->close($link);
+                throw new Exception("Error al obtener los pedidos");
+            }
+
+        }
+
+        // Funcion para obtener un pedido por su id
+        public function getPedidoById($id){
+            $link = $this->open();
+            $query = "SELECT * FROM pedido WHERE idPedido = $id";
+            $result = mysqli_query($link, $query);
+            
+            if($result){
+                $pedido = mysqli_fetch_assoc($result);
+                $this->close($link);
+                
+                return $pedido;
+            } else {
+                $this->close($link);
+                throw new Exception("Error al obtener el pedido");
+            }
+
+        }
+
+        // Funcion para obtener los pedidos por id de la Zona
+
+        public function getPedidosByZona($idZona){
+            $link = $this->open();
+            $query = "SELECT * FROM pedido WHERE idZona = $idZona";
+            $result = mysqli_query($link, $query);
+            
+            if($result){
+                $pedidos = [];
+                while($row = mysqli_fetch_assoc($result)){
+                    $pedidos[] = $row;
+                }
+                $this->close($link);
+                
+                return $pedidos;
+            } else {
+                $this->close($link);
+                throw new Exception("Error al obtener los pedidos");
+            }
+
+        }
+
+        // Funcion para obtener pedidos por id del Repartidor
+
+        public function getPedidosByRepartidor($idRepartidor){
+            $link = $this->open();
+            $query = "SELECT * FROM pedido WHERE idRepartidor = $idRepartidor";
+            $result = mysqli_query($link, $query);
+            
+            if($result){
+                $pedidos = [];
+                while($row = mysqli_fetch_assoc($result)){
+                    $pedidos[] = $row;
+                }
+                $this->close($link);
+                
+                return $pedidos;
+            } else {
+                $this->close($link);
+                throw new Exception("Error al obtener los pedidos");
+            }
+
+        }
+
+        // Funcion para insertar un pedido
+        public function createPedido($idZona, $cantidad_garrafones, $fecha = null, $estado, $prioridad, $idRepartidor = null, $idOperador = null) {
+            $link = $this->open();
+
+            $idRepartidor = is_null($idRepartidor) ? 'NULL' : $idRepartidor;
+            $idOperador = is_null($idOperador) ? 'NULL' : $idOperador;
+
+            $query = "INSERT INTO pedido (idZona, cantidad_garrafones, fecha, estado, prioridad, idRepartidor, idOperador) VALUES ($idZona, $cantidad_garrafones, '$fecha', '$estado', $prioridad, $idRepartidor, $idOperador)";
+            
+            
+            // Manejo de NULLS
+            if ($fecha == null) {
+                $query = "INSERT INTO pedido (idZona, cantidad_garrafones, estado, prioridad, idRepartidor, idOperador) VALUES ($idZona, $cantidad_garrafones, '$estado', $prioridad, $idRepartidor, $idOperador)";  
+            }
+
+            $result = mysqli_query($link, $query);
+            
+            if($result){
+                // En caso de que lo haya creado, buscamos el pedido para obtener su id
+                $query = "SELECT * FROM pedido WHERE idZona = $idZona AND cantidad_garrafones = $cantidad_garrafones AND fecha = '$fecha' AND estado = '$estado' AND prioridad = $prioridad AND idRepartidor = $idRepartidor AND idOperador = $idOperador";
+                $result = mysqli_query($link, $query);
+                $pedido = mysqli_fetch_assoc($result);
+                $this->close($link);
+
+                // Retornamos el id del pedido
+                return $pedido['idPedido'];
+            } else {
+                $this->close($link);
+                throw new Exception("Error al insertar el pedido");
+            }
+
+        }
+
+        // Funcion para actualizar un pedido
+        public function updatePedido($id, $idZona = null, $cantidad_garrafones = null, $fecha = null, $estado = null, $prioridad = null, $idRepartidor = null) {
+            $link = $this->open();
+
+            // Verificamos que el pedido exista primero
+            $query = "SELECT * FROM pedido WHERE idPedido = $id";
+            $result = mysqli_query($link, $query);
+
+            if(mysqli_num_rows($result) == 0){
+                $this->close($link);
+                throw new Exception("El pedido no existe");
+            }
+
+            $pedido = mysqli_fetch_assoc($result);
+
+            if($idZona == null){
+                $idZona = $pedido['idZona'];
+            }
+
+            if($cantidad_garrafones == null){
+                $cantidad_garrafones = $pedido['cantidad_garrafones'];
+            }
+
+            if($fecha == null){
+                $fecha = $pedido['fecha'];
+            }
+
+            if($estado == null){
+                $estado = $pedido['estado'];
+            }
+
+            if($prioridad == null){
+                $prioridad = $pedido['prioridad'];
+            }
+
+            if($idRepartidor == null){
+                $idRepartidor = $pedido['idRepartidor'];
+            }
+
+            // if($idOperador == null){
+            //     $idOperador = $pedido['idOperador'];
+            // }
+
+            $query = "UPDATE pedido SET idZona = $idZona, cantidad_garrafones = $cantidad_garrafones, fecha = '$fecha', estado = '$estado', prioridad = $prioridad, idRepartidor = $idRepartidor WHERE idPedido = $id";
+            $result = mysqli_query($link, $query);
+            
+            if($result){
+                $this->close($link);
+                
+                // En caso de que se actualice correctamente, retornamos el id del pedido actualizado
+                return $id;
+            } else {
+                $this->close($link);
+                throw new Exception("Error al actualizar el pedido");
+            }
+
+        }
 
 
     }
