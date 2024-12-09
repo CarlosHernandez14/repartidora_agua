@@ -46,15 +46,15 @@ public class TestClass {
         // }
 
         // Prueba de registro
-        Usuario usuario = new Usuario("maria", "maria@gmail.com", "maria", Rol.OPERADOR, true);
-
-        int id = WSManager.guardarUsuario(usuario);
-
-        if (id == -1) {
-            System.out.println("No se pudo guardar el usuario");
-        } else {
-            System.out.println("Usuario guardado con id: " + id);
-        }
+//        Usuario usuario = new Usuario("maria", "maria@gmail.com", "maria", Rol.OPERADOR, true);
+//
+//        int id = WSManager.guardarUsuario(usuario);
+//
+//        if (id == -1) {
+//            System.out.println("No se pudo guardar el usuario");
+//        } else {
+//            System.out.println("Usuario guardado con id: " + id);
+//        }
 
     }
 }
