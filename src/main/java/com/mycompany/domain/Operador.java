@@ -73,7 +73,7 @@ public class Operador extends Usuario implements Serializable{
 
     @Override
     public String toString() {
-        return "Operador{" + "idOperador=" + idOperador + ", idUsuario=" + idUsuario + ", horario=" + horario + '}';
+        return "Operador{" + "idOperador=" + idOperador + ", idUsuario=" + idUsuario + ", horario=" + horario + '}' + "\n" + super.toString();
     }
 
     

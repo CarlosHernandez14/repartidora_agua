@@ -74,7 +74,7 @@ public class Repartidor extends Usuario implements Serializable{
 
     @Override
     public String toString() {
-        return "Repartidor{" + "idRepartidor=" + idRepartidor + ", telefono=" + telefono + ", idCamion=" + idCamion + '}';
+        return "Repartidor{" + "idRepartidor=" + idRepartidor + ", telefono=" + telefono + ", idCamion=" + idCamion + '}' + "\n" + super.toString();
     }
 
     

@@ -11,8 +11,8 @@
     try {
         switch($_SERVER['REQUEST_METHOD']){
             case 'GET':
-                if(isset($_GET['id'])){
-                    $id = $_GET['id'];
+                if(isset($_GET['idUsuario'])){
+                    $id = $_GET['idUsuario'];
                     $user = $db->getUserById($id);
                     echo json_encode([
                         'OK' => true,
@@ -39,8 +39,9 @@
                 $correo = $data['correo'];
                 $contrasena = $data['contrasena'];
                 $rol = $data['rol'];
+                $activo = isset($data['activo']) ? filter_var($data['activo'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) : null;
 
-                $user = $db->createUser($nombre, $correo, $contrasena, $rol);
+                $user = $db->createUser($nombre, $correo, $contrasena, $rol, $activo);  
                 echo json_encode([
                     'OK' => true,
                     'message' => 'Usuario creado correctamente',
@@ -59,8 +60,9 @@
                 $correo = $data['correo'] ?? null;
                 $contrasena = $data['contrasena'] ?? null;
                 $rol = $data['rol'] ?? null;
+                $activo = isset($data['activo']) ? filter_var($data['activo'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) : null;
 
-                $user = $db->updateUser($idUsuario, $nombre, $correo, $contrasena, $rol);
+                $user = $db->updateUser($idUsuario, $nombre, $correo, $contrasena, $rol, $activo);
                 echo json_encode([
                     'OK' => true,
                     'message' => 'Usuario actualizado correctamente',

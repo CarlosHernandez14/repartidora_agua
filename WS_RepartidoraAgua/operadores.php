@@ -29,14 +29,15 @@
             case 'POST':
                 $data = json_decode(file_get_contents('php://input'), true);
 
-                if (!isset($data['idUsuario']) || !isset($data['horario'])) {
+                if (!isset($data['idUsuario']) || !isset($data['horario']) || !isset($data['nombre_completo'])) {
                     throw new Exception("Faltan datos");
                 }
 
                 $idUsuario = $data['idUsuario'];
                 $horario = $data['horario'];
+                $nombre_completo = $data['nombre_completo'];
 
-                $operador = $db->createOperador($idUsuario, $horario);
+                $operador = $db->createOperador($idUsuario, $horario, $nombre_completo);
                 echo json_encode([
                     'OK' => true,
                     'message' => 'Operador creado correctamente',

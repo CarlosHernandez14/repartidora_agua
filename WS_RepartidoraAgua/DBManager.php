@@ -51,8 +51,13 @@
         // Funcion para obtener un usuario por su id
         public function getUserById($id){
             $link = $this->open();
-            $query = "SELECT * FROM usuario WHERE id = $id";
+            $query = "SELECT * FROM usuario WHERE idUsuario = $id";
             $result = mysqli_query($link, $query);
+
+            if(!(mysqli_num_rows($result) > 0)) {
+                $this->close($link);
+                throw new Exception("El usuario no existe");
+            }
             
             if($result){
                 $user = mysqli_fetch_assoc($result);
@@ -67,29 +72,36 @@
         }
 
         // Funcion para insertar un usuario
-        public function createUser($nombre, $correo, $contrasena, $rol){
+        public function createUser($nombre, $correo, $contrasena, $rol, $activo = null) {
             $link = $this->open();
-            $query = "INSERT INTO usuario (nombre, correo, contrasena, rol) VALUES ('$nombre', '$correo', SHA1('$contrasena'), '$rol')";
+        
+            // Construcción de la consulta con o sin el campo "activo"
+            if ($activo !== null) { // Si el cliente especifica un valor para "activo"
+                $activo = $activo ? 1 : 0; // Aseguramos que sea 1 o 0
+                $query = "INSERT INTO usuario (nombre, correo, contrasena, rol, activo) 
+                          VALUES ('$nombre', '$correo', SHA1('$contrasena'), '$rol', $activo)";
+            } else {
+                $query = "INSERT INTO usuario (nombre, correo, contrasena, rol) 
+                          VALUES ('$nombre', '$correo', SHA1('$contrasena'), '$rol')";
+            }
+        
+            // Ejecución de la consulta
             $result = mysqli_query($link, $query);
-            
-            if($result){
-                // En caso de que lo haya creado, buscamos el usuario para obtener su id
+            if ($result) {
+                // Obtener el usuario recién creado
                 $query = "SELECT * FROM usuario WHERE correo = '$correo' AND contrasena = SHA1('$contrasena')";
                 $result = mysqli_query($link, $query);
                 $user = mysqli_fetch_assoc($result);
                 $this->close($link);
-
-                // Retornamos el id del usuario
                 return $user['idUsuario'];
             } else {
                 $this->close($link);
                 throw new Exception("Error al insertar el usuario");
             }
-
         }
 
         // Funcion para actualizar un usuario
-        public function updateUser($id, $nombre = null, $correo = null, $contrasena = null, $rol = null){
+        public function updateUser($id, $nombre = null, $correo = null, $contrasena = null, $rol = null, $activo = null){
             $link = $this->open();
 
             // Verificamos que el usuario exista primero
@@ -121,9 +133,16 @@
             if($rol == null){
                 $rol = $user['rol'];
             }
+
+            if($activo === null){
+                $activo = $user['activo'];
+            } else {
+                $activo = $activo ? 1 : 0;
+            }
             
 
-            $query = "UPDATE usuario SET nombre = '$nombre', correo = '$correo', contrasena = '$contrasena', rol = '$rol' WHERE idUsuario = $id";
+            $query = "UPDATE usuario SET nombre = '$nombre', correo = '$correo', contrasena = '$contrasena', rol = '$rol', activo = $activo WHERE idUsuario = $id";
+
             $result = mysqli_query($link, $query);
             
             if($result){
@@ -183,9 +202,9 @@
         }
 
         // Funcion para insertar un operador
-        public function createOperador($idUsuario, $horario) {
+        public function createOperador($idUsuario, $horario, $nombre_completo) {
             $link = $this->open();
-            $query = "INSERT INTO operador (idUsuario, horario) VALUES ($idUsuario, '$horario')";
+            $query = "INSERT INTO operador (idUsuario, horario, nombre_completo) VALUES ($idUsuario, '$horario', '$nombre_completo')";
             $result = mysqli_query($link, $query);
             
             if($result){
@@ -205,7 +224,7 @@
         }
 
         // Funcion para actualizar un operador
-        public function updateOperador($id, $horario = null){
+        public function updateOperador($id, $horario = null, $nombre_completo = null){
             $link = $this->open();
 
             // Verificamos que el operador exista primero
@@ -223,7 +242,7 @@
                 $horario = $operador['horario'];
             }
 
-            $query = "UPDATE operador SET horario = '$horario' WHERE idOperador = $id";
+            $query = "UPDATE operador SET horario = '$horario', nombre_completo = '$nombre_completo' WHERE idOperador = $id";
             $result = mysqli_query($link, $query);
             
             if($result){
