@@ -21,12 +21,13 @@ public class Pedido implements Serializable{
     private EstadoPedido estado; // PENDIENTE O ENTREGADO
     private boolean prioridad; // TRUE EN CASO DE SER PRIORITARIO
     private int idRepartidor;
+    private int idOperador;
 
     public Pedido() {
     }
 
     // CONSTRUCTOR LECTURA
-    public Pedido(int idPedido, int idZona, int cantidadGarrafones, Date fecha, EstadoPedido estado, boolean prioridad, int idRepartidor) {
+    public Pedido(int idPedido, int idZona, int cantidadGarrafones, Date fecha, EstadoPedido estado, boolean prioridad, int idRepartidor, int idOperador) {
         this.idPedido = idPedido;
         this.idZona = idZona;
         this.cantidadGarrafones = cantidadGarrafones;
@@ -34,17 +35,19 @@ public class Pedido implements Serializable{
         this.estado = estado;
         this.prioridad = prioridad;
         this.idRepartidor = idRepartidor;
+        this.idOperador = idOperador;
     }
 
     // CONSTRUCTOR CREACION
-    public Pedido(int idZona, int cantidadGarrafones, Date fecha, EstadoPedido estado, boolean prioridad, int idRepartidor) {
+
+    public Pedido(int idZona, int cantidadGarrafones, int idOperador) {
         this.idZona = idZona;
         this.cantidadGarrafones = cantidadGarrafones;
-        this.fecha = fecha;
-        this.estado = estado;
-        this.prioridad = prioridad;
-        this.idRepartidor = idRepartidor;
+        this.idOperador = idOperador;
     }
+
+    // CONSTRUCTOR DE ACTUALIZACION
+    
 
     public int getIdPedido() {
         return idPedido;
@@ -102,9 +105,17 @@ public class Pedido implements Serializable{
         this.idRepartidor = idRepartidor;
     }
 
+    public int getIdOperador() {
+        return idOperador;
+    }
+
+    public void setIdOperador(int idOperador) {
+        this.idOperador = idOperador;
+    }
+
     @Override
     public String toString() {
-        return "Pedido{" + "idPedido=" + idPedido + ", idZona=" + idZona + ", cantidadGarrafones=" + cantidadGarrafones + ", fecha=" + fecha + ", estado=" + estado + ", prioridad=" + prioridad + ", idRepartidor=" + idRepartidor + '}';
+        return "Pedido{" + "idPedido=" + idPedido + ", idZona=" + idZona + ", cantidadGarrafones=" + cantidadGarrafones + ", fecha=" + fecha + ", estado=" + estado + ", prioridad=" + prioridad + ", idRepartidor=" + idRepartidor + ", idOperador=" + idOperador + '}';
     }
     
 }

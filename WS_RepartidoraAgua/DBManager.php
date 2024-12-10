@@ -998,17 +998,24 @@
         }
 
         // Funcion para insertar un pedido
-        public function createPedido($idZona, $cantidad_garrafones, $fecha = null, $estado, $prioridad, $idRepartidor = null, $idOperador = null) {
+        public function createPedido($idZona, $cantidad_garrafones, $fecha = null, $estado = null, $prioridad = null, $idRepartidor = null, $idOperador) {
             $link = $this->open();
 
             $idRepartidor = is_null($idRepartidor) ? 'NULL' : $idRepartidor;
-            $idOperador = is_null($idOperador) ? 'NULL' : $idOperador;
+
+            if (is_null($estado)) {
+                $estado = 'PENDIENTE';
+            }
+
+            if (is_null($prioridad)) {
+                $prioridad = 0;
+            }
 
             $query = "INSERT INTO pedido (idZona, cantidad_garrafones, fecha, estado, prioridad, idRepartidor, idOperador) VALUES ($idZona, $cantidad_garrafones, '$fecha', '$estado', $prioridad, $idRepartidor, $idOperador)";
             
             
             // Manejo de NULLS
-            if ($fecha == null) {
+            if (is_null($fecha)) {
                 $query = "INSERT INTO pedido (idZona, cantidad_garrafones, estado, prioridad, idRepartidor, idOperador) VALUES ($idZona, $cantidad_garrafones, '$estado', $prioridad, $idRepartidor, $idOperador)";  
             }
 
@@ -1016,7 +1023,7 @@
             
             if($result){
                 // En caso de que lo haya creado, buscamos el pedido para obtener su id
-                $query = "SELECT * FROM pedido WHERE idZona = $idZona AND cantidad_garrafones = $cantidad_garrafones AND fecha = '$fecha' AND estado = '$estado' AND prioridad = $prioridad AND idRepartidor = $idRepartidor AND idOperador = $idOperador";
+                $query = "SELECT * FROM pedido WHERE idZona = $idZona AND cantidad_garrafones = $cantidad_garrafones AND idOPerador = $idOperador";
                 $result = mysqli_query($link, $query);
                 $pedido = mysqli_fetch_assoc($result);
                 $this->close($link);
@@ -1045,31 +1052,31 @@
 
             $pedido = mysqli_fetch_assoc($result);
 
-            if($idZona == null){
+            if($idZona === null){
                 $idZona = $pedido['idZona'];
             }
 
-            if($cantidad_garrafones == null){
+            if($cantidad_garrafones === null){
                 $cantidad_garrafones = $pedido['cantidad_garrafones'];
             }
 
-            if($fecha == null){
+            if($fecha === null){
                 $fecha = $pedido['fecha'];
             }
 
-            if($estado == null){
+            if($estado === null){
                 $estado = $pedido['estado'];
             }
 
-            if($prioridad == null){
+            if($prioridad === null){
                 $prioridad = $pedido['prioridad'];
             }
 
-            if($idRepartidor == null){
+            if($idRepartidor === null){
                 $idRepartidor = $pedido['idRepartidor'];
             }
 
-            // if($idOperador == null){
+            // if($idOperador === null){
             //     $idOperador = $pedido['idOperador'];
             // }
 

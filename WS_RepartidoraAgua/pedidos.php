@@ -18,6 +18,22 @@
                         'message' => 'Pedido obtenido correctamente',
                         'data' => $pedido
                     ]);
+                } else if (isset($_GET['idZona'])) {
+                    $id = $_GET['idZona'];
+                    $pedidos = $db->getPedidosByZona($id);
+                    echo json_encode([
+                        'OK' => true,
+                        'message' => 'Pedidos obtenidos correctamente',
+                        'data' => $pedidos
+                    ]);
+                } else if (isset($_GET['idRepartidor'])) {
+                    $id = $_GET['idRepartidor'];
+                    $pedidos = $db->getPedidosByRepartidor($id);
+                    echo json_encode([
+                        'OK' => true,
+                        'message' => 'Pedidos obtenidos correctamente',
+                        'data' => $pedidos
+                    ]);
                 } else {
                     $pedidos = $db->getPedidos();
                     echo json_encode([
@@ -30,17 +46,20 @@
             case 'POST':
                 $data = json_decode(file_get_contents('php://input'), true);
 
-                if (!isset($data['idCliente']) || !isset($data['idDireccion']) || !isset($data['idEstado'])) {
+                if (!isset($data['idZona']) || !isset($data['cantidad_garrafones']) || !isset($data['idOperador']) ) {
                     throw new Exception("Faltan datos");
                 }
 
-                $idCliente = $data['idCliente'];
-                $idDireccion = $data['idDireccion'];
-                $idEstado = $data['idEstado'];
+                $idZona = $data['idZona'];
+                $cantidad_garrafones = $data['cantidad_garrafones'];
                 $fecha = $data['fecha'] ?? null;
-                $total = $data['total'] ?? null;
+                $estado = $data['estado'] ?? null;
+                // Prioridad verificamos que sea boolean or null
+                $prioridad = isset($data['prioridad']) ? filter_var($data['prioridad'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) : null;
+                $idRepartidor = $data['idRepartidor'] ?? null;
+                $idOperador = $data['idOperador'];
 
-                $pedido = $db->createPedido($idCliente, $idDireccion, $idEstado, $fecha, $total);
+                $pedido = $db->createPedido($idZona, $cantidad_garrafones, $fecha, $estado, $prioridad, $idRepartidor, $idOperador);
 
                 echo json_encode([
                     'OK' => true,

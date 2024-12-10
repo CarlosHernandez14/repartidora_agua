@@ -7,10 +7,16 @@ package com.mycompany.dao;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializer;
+import com.mycompany.domain.Calle;
+import com.mycompany.domain.Camion;
+import com.mycompany.domain.Colonia;
+import com.mycompany.domain.EstadoPedido;
 import com.mycompany.domain.Operador;
+import com.mycompany.domain.Pedido;
 import com.mycompany.domain.Repartidor;
 import com.mycompany.domain.Rol;
 import com.mycompany.domain.Usuario;
+import com.mycompany.domain.Zona;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -402,6 +408,714 @@ public class WSManager {
         }
         return -1;
     }
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// Metodos para manejar los camiones
+    // Metodo para obtener los camiones
+    public static List<Camion> getCamiones() {
+        String request_url = WSManager.WS_URL + "camiones.php";
+
+        try {
+            List<Camion> camiones = new ArrayList<>();
+
+            String result = Request.Get(request_url)
+                    .execute().returnContent().asString();
+
+            JSONParser parser = new JSONParser();
+            JSONObject jsonResponse = (JSONObject) parser.parse(result);
+
+            if (!Boolean.parseBoolean(jsonResponse.get("OK").toString())) {
+                String error = (String) jsonResponse.get("error");
+                throw new Exception("Ocurrio un error en la peticion:" + error);
+
+            }
+
+            // Obtenemos la data en caso de que la peticion haya ido bien
+            JSONArray jsonData = (JSONArray) jsonResponse.get("data");
+
+            // Agregamos el resultado a la list
+            for (Object object : jsonData) {
+                JSONObject jsonCamion = (JSONObject) object;
+
+                int idCamion = Integer.parseInt((String) jsonCamion.get("idCamion"));
+                String placas = (String) jsonCamion.get("placas");
+                String marca = (String) jsonCamion.get("marca");
+                String modelo = (String) jsonCamion.get("modelo");
+                int capacidad = Integer.parseInt((String) jsonCamion.get("capacidad"));
+
+                // Creeamos el camion para agreaar a la lista
+                Camion camion = new Camion(idCamion, capacidad, placas, modelo, marca);
+
+                // Lo agregamos a la lista
+                camiones.add(camion);
+            }
+
+            return camiones;
+
+        } catch (IOException e) {
+            System.out.println("IO ERROR en la solicitud: " + e.getMessage());
+        } catch (ParseException ex) {
+            System.out.println("Error al parsear el json response:" + ex.getMessage());
+        } catch (Exception ex) {
+            System.out.println("Error al obtener a los camiones" + ex.getMessage());
+        }
+        return null;
+    }
+
+    // Metodo para guardar un camion
+    public static int guardarCamion(Camion camion) {
+        String request_url = WSManager.WS_URL + "camiones.php";
+
+        try {
+            // Creamos el objeto JSON a enviar
+            JSONObject jsonCamion = new JSONObject();
+            jsonCamion.put("capacidad", camion.getCapacidad());
+            jsonCamion.put("placas", camion.getPlacas());
+            jsonCamion.put("marca", camion.getMarca());
+            jsonCamion.put("modelo", camion.getModelo());
+
+            // Creamos el request
+            String result = Request.Post(request_url)
+                    .bodyString(jsonCamion.toJSONString(), ContentType.APPLICATION_JSON)
+                    .execute().returnContent().asString();
+
+            JSONParser parser = new JSONParser();
+            JSONObject jsonResponse = (JSONObject) parser.parse(result);
+
+            if (!Boolean.parseBoolean(jsonResponse.get("OK").toString())) {
+                String error = (String) jsonResponse.get("error");
+                throw new Exception("Ocurrio un error en la peticion:" + error);
+            }
+
+            return Integer.parseInt((String) jsonResponse.get("data"));
+
+        } catch (IOException e) {
+            System.out.println("IO ERROR en la solicitud: " + e.getMessage());
+        } catch (ParseException ex) {
+            System.out.println("Error al parsear el json response:" + ex.getMessage());
+        } catch (Exception ex) {
+            System.out.println("Error al guardar el camion" + ex.getMessage());
+        }
+        return -1;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////
+    
+    // Metodo para obtener las zonas
+    public static List<Zona> getZonas() {
+        String request_url = WSManager.WS_URL + "zonas.php";
+
+        try {
+            List<Zona> zonas = new ArrayList<>();
+
+            String result = Request.Get(request_url)
+                    .execute().returnContent().asString();
+
+            JSONParser parser = new JSONParser();
+            JSONObject jsonResponse = (JSONObject) parser.parse(result);
+
+            if (!Boolean.parseBoolean(jsonResponse.get("OK").toString())) {
+                String error = (String) jsonResponse.get("error");
+                throw new Exception("Ocurrio un error en la peticion:" + error);
+
+            }
+
+            // Obtenemos la data en caso de que la peticion haya ido bien
+            JSONArray jsonData = (JSONArray) jsonResponse.get("data");
+
+            // Agregamos el resultado a la list
+            for (Object object : jsonData) {
+                JSONObject jsonZona = (JSONObject) object;
+
+                int idZona = Integer.parseInt((String) jsonZona.get("idZona"));
+                String nombre = (String) jsonZona.get("nombre");
+                String coordenadas_x = (String) jsonZona.get("coordenadas_x");
+                String coordenadas_y = (String) jsonZona.get("coordenadas_y");
+
+                // Creeamos la zona para agreaar a la lista
+                Zona zona = new Zona(idZona, nombre, coordenadas_x, coordenadas_y);
+
+                // Lo agregamos a la lista
+                zonas.add(zona);
+            }
+
+            return zonas;
+
+        } catch (IOException e) {
+            System.out.println("IO ERROR en la solicitud: " + e.getMessage());
+        } catch (ParseException ex) {
+            System.out.println("Error al parsear el json response:" + ex.getMessage());
+        } catch (Exception ex) {
+            System.out.println("Error al obtener a las zonas" + ex.getMessage());
+        }
+        return null;
+    }
+
+    // Metodo para guardar una zona
+    public static int guardarZona(Zona zona) {
+        String request_url = WSManager.WS_URL + "zonas.php";
+
+        try {
+            // Creamos el objeto JSON a enviar
+            JSONObject jsonZona = new JSONObject();
+            jsonZona.put("nombre", zona.getNombre());
+            jsonZona.put("coordenadas_x", zona.getCoordenadas_x());
+            jsonZona.put("coordenadas_y", zona.getCoordenadas_y());
+
+            // Creamos el request
+            String result = Request.Post(request_url)
+                    .bodyString(jsonZona.toJSONString(), ContentType.APPLICATION_JSON)
+                    .execute().returnContent().asString();
+
+            JSONParser parser = new JSONParser();
+            JSONObject jsonResponse = (JSONObject) parser.parse(result);
+
+            if (!Boolean.parseBoolean(jsonResponse.get("OK").toString())) {
+                String error = (String) jsonResponse.get("error");
+                throw new Exception("Ocurrio un error en la peticion:" + error);
+            }
+
+            return Integer.parseInt((String) jsonResponse.get("data"));
+
+        } catch (IOException e) {
+            System.out.println("IO ERROR en la solicitud: " + e.getMessage());
+        } catch (ParseException ex) {
+            System.out.println("Error al parsear el json response:" + ex.getMessage());
+        } catch (Exception ex) {
+            System.out.println("Error al guardar la zona" + ex.getMessage());
+        }
+        return -1;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////
+    /// Metodos para manejar las calles
+
+    // Metodo para obtener las calles
+    public static List<Calle> getCalles() {
+        String request_url = WSManager.WS_URL + "calles.php";
+
+        try {
+            List<Calle> calles = new ArrayList<>();
+
+            String result = Request.Get(request_url)
+                    .execute().returnContent().asString();
+
+            JSONParser parser = new JSONParser();
+            JSONObject jsonResponse = (JSONObject) parser.parse(result);
+
+            if (!Boolean.parseBoolean(jsonResponse.get("OK").toString())) {
+                String error = (String) jsonResponse.get("error");
+                throw new Exception("Ocurrio un error en la peticion:" + error);
+
+            }
+
+            // Obtenemos la data en caso de que la peticion haya ido bien
+            JSONArray jsonData = (JSONArray) jsonResponse.get("data");
+
+            // Agregamos el resultado a la list
+            for (Object object : jsonData) {
+                JSONObject jsonCalle = (JSONObject) object;
+
+                int idCalle = Integer.parseInt((String) jsonCalle.get("idCalle"));
+                int idColonia = Integer.parseInt((String) jsonCalle.get("idColonia"));
+                String nombre = (String) jsonCalle.get("nombre");
+                String descripcion = (String) jsonCalle.get("descripcion");
+
+                // Creeamos la calle para agreaar a la lista
+                Calle calle = new Calle(idCalle, idColonia, nombre, descripcion);
+
+                // Lo agregamos a la lista
+                calles.add(calle);
+            }
+
+            return calles;
+
+        } catch (IOException e) {
+            System.out.println("IO ERROR en la solicitud: " + e.getMessage());
+        } catch (ParseException ex) {
+            System.out.println("Error al parsear el json response:" + ex.getMessage());
+        } catch (Exception ex) {
+            System.out.println("Error al obtener a las calles" + ex.getMessage());
+        }
+        return null;
+    }
+
+    // Metodo para obtener las calles de una colonia
+    public static List<Calle> getCallesByColonia(int idColonia) {
+        String request_url = WSManager.WS_URL + "calles.php?idColonia=" + idColonia;
+
+        try {
+            List<Calle> calles = new ArrayList<>();
+
+            String result = Request.Get(request_url)
+                    .execute().returnContent().asString();
+
+            JSONParser parser = new JSONParser();
+            JSONObject jsonResponse = (JSONObject) parser.parse(result);
+
+            if (!Boolean.parseBoolean(jsonResponse.get("OK").toString())) {
+                String error = (String) jsonResponse.get("error");
+                throw new Exception("Ocurrio un error en la peticion:" + error);
+
+            }
+
+            // Obtenemos la data en caso de que la peticion haya ido bien
+            JSONArray jsonData = (JSONArray) jsonResponse.get("data");
+
+            // Agregamos el resultado a la list
+            for (Object object : jsonData) {
+                JSONObject jsonCalle = (JSONObject) object;
+
+                int idCalle = Integer.parseInt((String) jsonCalle.get("idCalle"));
+                String nombre = (String) jsonCalle.get("nombre");
+                String descripcion = (String) jsonCalle.get("descripcion");
+
+                // Creeamos la calle para agreaar a la lista
+                Calle calle = new Calle(idCalle, idColonia, nombre, descripcion);
+
+                // Lo agregamos a la lista
+                calles.add(calle);
+            }
+
+            return calles;
+
+        } catch (IOException e) {
+            System.out.println("IO ERROR en la solicitud: " + e.getMessage());
+        } catch (ParseException ex) {
+            System.out.println("Error al parsear el json response:" + ex.getMessage());
+        } catch (Exception ex) {
+            System.out.println("Error al obtener a las calles" + ex.getMessage());
+        }
+        return null;
+    }
+
+    // Metodo para guardar una calle
+    public static int guardarCalle(Calle calle) {
+        String request_url = WSManager.WS_URL + "calles.php";
+
+        try {
+            // Creamos el objeto JSON a enviar
+            JSONObject jsonCalle = new JSONObject();
+            jsonCalle.put("idColonia", calle.getIdColonia());
+            jsonCalle.put("nombre", calle.getNombre());
+            jsonCalle.put("descripcion", calle.getDescripcion());
+
+            // Creamos el request
+            String result = Request.Post(request_url)
+                    .bodyString(jsonCalle.toJSONString(), ContentType.APPLICATION_JSON)
+                    .execute().returnContent().asString();
+
+            JSONParser parser = new JSONParser();
+            JSONObject jsonResponse = (JSONObject) parser.parse(result);
+
+            if (!Boolean.parseBoolean(jsonResponse.get("OK").toString())) {
+                String error = (String) jsonResponse.get("error");
+                throw new Exception("Ocurrio un error en la peticion:" + error);
+            }
+
+            return Integer.parseInt((String) jsonResponse.get("data"));
+
+        } catch (IOException e) {
+            System.out.println("IO ERROR en la solicitud: " + e.getMessage());
+        } catch (ParseException ex) {
+            System.out.println("Error al parsear el json response:" + ex.getMessage());
+        } catch (Exception ex) {
+            System.out.println("Error al guardar la calle" + ex.getMessage());
+        }
+        return -1;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////
+    /// Metodos para manejar las colonias
+    
+    // Metodo para obtener las colonias
+    public static List<Colonia> getColonias() {
+        String request_url = WSManager.WS_URL + "colonias.php";
+
+        try {
+            List<Colonia> colonias = new ArrayList<>();
+
+
+            String result = Request.Get(request_url)
+                    .execute().returnContent().asString();
+
+            JSONParser parser = new JSONParser();
+            JSONObject jsonResponse = (JSONObject) parser.parse(result);
+
+            if (!Boolean.parseBoolean(jsonResponse.get("OK").toString())) {
+                String error = (String) jsonResponse.get("error");
+                throw new Exception("Ocurrio un error en la peticion:" + error);
+
+            }
+
+            // Obtenemos la data en caso de que la peticion haya ido bien
+            JSONArray jsonData = (JSONArray) jsonResponse.get("data");
+
+            // Agregamos el resultado a la list
+            for (Object object : jsonData) {
+                JSONObject jsonColonia = (JSONObject) object;
+
+                int idColonia = Integer.parseInt((String) jsonColonia.get("idColonia"));
+                String nombre = (String) jsonColonia.get("nombre");
+                int idZona = Integer.parseInt((String) jsonColonia.get("idZona"));
+
+                // Obtenemos las calles de la colonia
+                ArrayList<Calle> calles = (ArrayList<Calle>) getCallesByColonia(idColonia);
+
+                // Creeamos la colon para agreaar a la lista
+                Colonia colonia = new Colonia(idColonia, nombre, calles, idZona);
+
+                // Lo agregamos a la lista
+                colonias.add(colonia);
+            }
+
+            return colonias;
+
+        } catch (IOException e) {
+            System.out.println("IO ERROR en la solicitud: " + e.getMessage());
+        } catch (ParseException ex) {
+            System.out.println("Error al parsear el json response:" + ex.getMessage());
+        } catch (Exception ex) {
+            System.out.println("Error al obtener a las colonias" + ex.getMessage());
+        }
+        return null;
+    }
+
+    // Metodo para obtener las colonias de una zona
+    public static List<Colonia> getColoniasByZona(int idZona) {
+        String request_url = WSManager.WS_URL + "colonias.php?idZona=" + idZona;
+
+        try {
+            List<Colonia> colonias = new ArrayList<>();
+
+
+            String result = Request.Get(request_url)
+                    .execute().returnContent().asString();
+
+            JSONParser parser = new JSONParser();
+            JSONObject jsonResponse = (JSONObject) parser.parse(result);
+
+            if (!Boolean.parseBoolean(jsonResponse.get("OK").toString())) {
+                String error = (String) jsonResponse.get("error");
+                throw new Exception("Ocurrio un error en la peticion:" + error);
+
+            }
+
+            // Obtenemos la data en caso de que la peticion haya ido bien
+            JSONArray jsonData = (JSONArray) jsonResponse.get("data");
+
+            // Agregamos el resultado a la list
+            for (Object object : jsonData) {
+                JSONObject jsonColonia = (JSONObject) object;
+
+                int idColonia = Integer.parseInt((String) jsonColonia.get("idColonia"));
+                String nombre = (String) jsonColonia.get("nombre");
+
+                // Obtenemos las calles de la colonia
+                ArrayList<Calle> calles = (ArrayList<Calle>) getCallesByColonia(idColonia);
+
+                // Creeamos la colon para agreaar a la lista
+                Colonia colonia = new Colonia(idColonia, nombre, calles, idZona);
+
+                // Lo agregamos a la lista
+                colonias.add(colonia);
+            }
+
+            return colonias;
+
+        } catch (IOException e) {
+            System.out.println("IO ERROR en la solicitud: " + e.getMessage());
+        } catch (ParseException ex) {
+            System.out.println("Error al parsear el json response:" + ex.getMessage());
+        } catch (Exception ex) {
+            System.out.println("Error al obtener a las colonias" + ex.getMessage());
+        }
+        return null;
+    }
+
+    // Metodo para guardar una colonia
+    public static int guardarColonia(Colonia colonia) {
+        String request_url = WSManager.WS_URL + "colonias.php";
+
+        try {
+            // Creamos el objeto JSON a enviar
+            JSONObject jsonColonia = new JSONObject();
+            jsonColonia.put("nombre", colonia.getNombre());
+            jsonColonia.put("idZona", colonia.getIdZona());
+
+            // Creamos el request
+            String result = Request.Post(request_url)
+                    .bodyString(jsonColonia.toJSONString(), ContentType.APPLICATION_JSON)
+                    .execute().returnContent().asString();
+
+            JSONParser parser = new JSONParser();
+            JSONObject jsonResponse = (JSONObject) parser.parse(result);
+
+            if (!Boolean.parseBoolean(jsonResponse.get("OK").toString())) {
+                String error = (String) jsonResponse.get("error");
+                throw new Exception("Ocurrio un error en la peticion:" + error);
+            }
+
+            return Integer.parseInt((String) jsonResponse.get("data"));
+
+        } catch (IOException e) {
+            System.out.println("IO ERROR en la solicitud: " + e.getMessage());
+        } catch (ParseException ex) {
+            System.out.println("Error al parsear el json response:" + ex.getMessage());
+        } catch (Exception ex) {
+            System.out.println("Error al guardar la colonia" + ex.getMessage());
+        }
+        return -1;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////
+    /// 
+    /// Metodos para manejar los pedidos
+    
+    // Metodo para obtener los pedidos
+    public static List<Pedido> getPedidos() {
+        String request_url = WSManager.WS_URL + "pedidos.php";
+
+        try {
+            List<Pedido> pedidos = new ArrayList<>();
+
+            String result = Request.Get(request_url)
+                    .execute().returnContent().asString();
+
+            JSONParser parser = new JSONParser();
+            JSONObject jsonResponse = (JSONObject) parser.parse(result);
+
+            if (!Boolean.parseBoolean(jsonResponse.get("OK").toString())) {
+                String error = (String) jsonResponse.get("error");
+                throw new Exception("Ocurrio un error en la peticion:" + error);
+
+            }
+
+            // Obtenemos la data en caso de que la peticion haya ido bien
+            JSONArray jsonData = (JSONArray) jsonResponse.get("data");
+
+            // Agregamos el resultado a la list
+            for (Object object : jsonData) {
+                JSONObject jsonPedido = (JSONObject) object;
+
+                int idPedido = Integer.parseInt((String) jsonPedido.get("idPedido"));
+                int idZona = Integer.parseInt((String) jsonPedido.get("idZona"));
+                int cantidadGarrafones = Integer.parseInt((String) jsonPedido.get("cantidad_garrafones"));
+                String fecha = (String) jsonPedido.get("fecha");
+                // Convertimos la fecha a un objeto Date
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                LocalDate localDate = LocalDate.parse(fecha, formatter);
+                Date date = Date.valueOf(localDate);
+
+                String estado = (String) jsonPedido.get("estado"); // ENUM en la BD
+
+                EstadoPedido estadoPedido;
+                try {
+                    estadoPedido = EstadoPedido.valueOf(estado.toUpperCase());
+                } catch (IllegalArgumentException e) {
+                    throw new IllegalArgumentException("El estado recibido no coindcide con el enum");
+                }
+
+                // Prioridad del pedido (boolean)
+                boolean prioridad = ((String) jsonPedido.get("prioridad")).equals("1");
+                int idRepartidor = Integer.parseInt((String) jsonPedido.get("idRepartidor"));
+                int idOperador = Integer.parseInt((String) jsonPedido.get("idOperador"));
+
+                // Creeamos el pedido para agreaar a la lista
+                Pedido pedido = new Pedido(idPedido, idZona, cantidadGarrafones, date, estadoPedido, prioridad,
+                        idRepartidor, idOperador);
+
+                // Lo agregamos a la lista
+                pedidos.add(pedido);
+            }
+
+            return pedidos;
+
+        } catch (IOException e) {
+            System.out.println("IO ERROR en la solicitud: " + e.getMessage());
+        } catch (ParseException ex) {
+            System.out.println("Error al parsear el json response:" + ex.getMessage());
+        } catch (Exception ex) {
+            System.out.println("Error al obtener a los pedidos" + ex.getMessage());
+        }
+        return null;
+    }
+
+    // Metodo para obtener los pedidos de un repartidor
+    public static List<Pedido> getPedidosByRepartidor(int idRepartidor) {
+        String request_url = WSManager.WS_URL + "pedidos.php?idRepartidor=" + idRepartidor;
+
+        try {
+            List<Pedido> pedidos = new ArrayList<>();
+
+            String result = Request.Get(request_url)
+                    .execute().returnContent().asString();
+
+            JSONParser parser = new JSONParser();
+            JSONObject jsonResponse = (JSONObject) parser.parse(result);
+
+            if (!Boolean.parseBoolean(jsonResponse.get("OK").toString())) {
+                String error = (String) jsonResponse.get("error");
+                throw new Exception("Ocurrio un error en la peticion:" + error);
+
+            }
+
+            // Obtenemos la data en caso de que la peticion haya ido bien
+            JSONArray jsonData = (JSONArray) jsonResponse.get("data");
+
+            // Agregamos el resultado a la list
+            for (Object object : jsonData) {
+                JSONObject jsonPedido = (JSONObject) object;
+
+                int idPedido = Integer.parseInt((String) jsonPedido.get("idPedido"));
+                int idZona = Integer.parseInt((String) jsonPedido.get("idZona"));
+                int cantidadGarrafones = Integer.parseInt((String) jsonPedido.get("cantidad_garrafones"));
+                String fecha = (String) jsonPedido.get("fecha");
+                // Convertimos la fecha a un objeto Date
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                LocalDate localDate = LocalDate.parse(fecha, formatter);
+                Date date = Date.valueOf(localDate);
+
+                String estado = (String) jsonPedido.get("estado"); // ENUM en la BD
+
+                EstadoPedido estadoPedido;
+                try {
+                    estadoPedido = EstadoPedido.valueOf(estado.toUpperCase());
+                } catch (IllegalArgumentException e) {
+                    throw new IllegalArgumentException("El estado recibido no coindcide con el enum");
+                }
+
+                // Prioridad del pedido (boolean)
+                boolean prioridad = ((String) jsonPedido.get("prioridad")).equals("1");
+                int idOperador = Integer.parseInt((String) jsonPedido.get("idOperador"));
+
+                // Creeamos el pedido para agreaar a la lista
+                Pedido pedido = new Pedido(idPedido, idZona, cantidadGarrafones, date, estadoPedido, prioridad,
+                        idRepartidor, idOperador);
+
+                // Lo agregamos a la lista
+                pedidos.add(pedido);
+            }
+
+            return pedidos;
+
+        } catch (IOException e) {
+            System.out.println("IO ERROR en la solicitud: " + e.getMessage());
+        } catch (ParseException ex) {
+            System.out.println("Error al parsear el json response:" + ex.getMessage());
+        } catch (Exception ex) {
+            System.out.println("Error al obtener a los pedidos" + ex.getMessage());
+        }
+        return null;
+    }
+
+    // Metodo para guardar un pedido
+    public static int guardarPedido(Pedido pedido) {
+        String request_url = WSManager.WS_URL + "pedidos.php";
+
+        try {
+            // Creamos el objeto JSON a enviar
+            JSONObject jsonPedido = new JSONObject();
+            // Campos obligatorios para crear el pedido
+            jsonPedido.put("idZona", pedido.getIdZona());
+            jsonPedido.put("cantidad_garrafones", pedido.getCantidadGarrafones());
+            jsonPedido.put("idOperador", pedido.getIdOperador());
+
+            // Campos opcionales en caso de que sean nulos o vacios no se envian
+            if (pedido.getFecha() != null) {
+                jsonPedido.put("fecha", pedido.getFecha().toString());
+            }
+            if (pedido.getEstado() != null) {
+                jsonPedido.put("estado", pedido.getEstado().toString());
+            }
+            if (pedido.isPrioridad()) {
+                jsonPedido.put("prioridad", "1");
+            }
+            if (pedido.getIdRepartidor() != 0) {
+                jsonPedido.put("idRepartidor", pedido.getIdRepartidor());
+            }
+
+
+            // Creamos el request
+            String result = Request.Post(request_url)
+                    .bodyString(jsonPedido.toJSONString(), ContentType.APPLICATION_JSON)
+                    .execute().returnContent().asString();
+
+            JSONParser parser = new JSONParser();
+            JSONObject jsonResponse = (JSONObject) parser.parse(result);
+
+            if (!Boolean.parseBoolean(jsonResponse.get("OK").toString())) {
+                String error = (String) jsonResponse.get("error");
+                throw new Exception("Ocurrio un error en la peticion:" + error);
+            }
+
+            return Integer.parseInt((String) jsonResponse.get("data"));
+
+        } catch (IOException e) {
+            System.out.println("IO ERROR en la solicitud: " + e.getMessage());
+        } catch (ParseException ex) {
+            System.out.println("Error al parsear el json response:" + ex.getMessage());
+        } catch (Exception ex) {
+            System.out.println("Error al guardar el pedido" + ex.getMessage());
+        }
+        return -1;
+    }
+
+    // Metodo para actualizar un pedido
+    public static int actualizarPedido(Pedido pedido) {
+        String request_url = WSManager.WS_URL + "pedidos.php";
+
+        try {
+            // Creamos el objeto JSON a enviar
+            JSONObject jsonPedido = new JSONObject();
+            // Campos obligatorios para crear el pedido
+            jsonPedido.put("idPedido", pedido.getIdPedido());
+            jsonPedido.put("idZona", pedido.getIdZona());
+            jsonPedido.put("cantidad_garrafones", pedido.getCantidadGarrafones());
+            jsonPedido.put("idOperador", pedido.getIdOperador());
+
+            // Campos opcionales en caso de que sean nulos o vacios no se envian
+            if (pedido.getFecha() != null) {
+                jsonPedido.put("fecha", pedido.getFecha().toString());
+            }
+            if (pedido.getEstado() != null) {
+                jsonPedido.put("estado", pedido.getEstado().toString());
+            }
+            if (pedido.isPrioridad()) {
+                jsonPedido.put("prioridad", "1");
+            }
+            if (pedido.getIdRepartidor() != 0) {
+                jsonPedido.put("idRepartidor", pedido.getIdRepartidor());
+            }
+
+
+            // Creamos el request
+            String result = Request.Put(request_url)
+                    .bodyString(jsonPedido.toJSONString(), ContentType.APPLICATION_JSON)
+                    .execute().returnContent().asString();
+
+            JSONParser parser = new JSONParser();
+            JSONObject jsonResponse = (JSONObject) parser.parse(result);
+
+            if (!Boolean.parseBoolean(jsonResponse.get("OK").toString())) {
+                String error = (String) jsonResponse.get("error");
+                throw new Exception("Ocurrio un error en la peticion:" + error);
+            }
+
+            return Integer.parseInt((String) jsonResponse.get("data"));
+
+        } catch (IOException e) {
+            System.out.println("IO ERROR en la solicitud: " + e.getMessage());
+        } catch (ParseException ex) {
+            System.out.println("Error al parsear el json response:" + ex.getMessage());
+        } catch (Exception ex) {
+            System.out.println("Error al actualizar el pedido" + ex.getMessage());
+        }
+        return -1;
+    }       
+
+    //////////////////////////////////////////////////////////////////////////////////////////////
+
 
     private static String hashSHA1(String input) {
         try {

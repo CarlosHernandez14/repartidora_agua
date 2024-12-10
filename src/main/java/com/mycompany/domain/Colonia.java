@@ -4,6 +4,8 @@
  */
 package com.mycompany.domain;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author carlo
@@ -12,14 +14,14 @@ public class Colonia {
     
     private int idColonia;
     private String nombre;
-    private Calle[] calles;
+    private ArrayList<Calle> calles;
     private int idZona;
 
     public Colonia() {
     }
     
     // CONSTRUCTOR LECTURA
-    public Colonia(int idColonia, String nombre, Calle[] calles, int idZona) {
+    public Colonia(int idColonia, String nombre, ArrayList<Calle> calles, int idZona) {
         this.idColonia = idColonia;
         this.nombre = nombre;
         this.calles = calles;
@@ -27,7 +29,7 @@ public class Colonia {
     }
 
     // CONSTRUCTOR CREACION
-    public Colonia(String nombre, Calle[] calles, int idZona) {
+    public Colonia(String nombre, ArrayList<Calle> calles, int idZona) {
         this.nombre = nombre;
         this.calles = calles;
         this.idZona = idZona;
@@ -49,11 +51,11 @@ public class Colonia {
         this.nombre = nombre;
     }
 
-    public Calle[] getCalles() {
+    public ArrayList<Calle> getCalles() {
         return calles;
     }
 
-    public void setCalles(Calle[] calles) {
+    public void setCalles(ArrayList<Calle> calles) {
         this.calles = calles;
     }
 
