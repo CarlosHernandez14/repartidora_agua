@@ -32,12 +32,21 @@ public class Operador extends Usuario implements Serializable{
         this.nombre_completo = nombreCompleto;
     }
     
-    // CONSTRUCTOR PARA CREAR OBJETOS NUEVOS
+    
     public Operador(String horario, String nombre, String correo, String contrasena, Rol rol, boolean activo, String nombreCompleto) {
         super(nombre, correo, contrasena, rol, activo);
         this.horario = horario;
         this.nombre_completo = nombreCompleto;
     }
+    
+    // CONSTRUCTOR PARA CREAR OBJETOS NUEVOS
+
+    public Operador(String nombre_completo, String horario, String nombre, String correo, String contrasena, Rol rol) {
+        super(nombre, correo, contrasena, rol);
+        this.nombre_completo = nombre_completo;
+        this.horario = horario;
+    }
+    
 
     public int getIdOperador() {
         return idOperador;

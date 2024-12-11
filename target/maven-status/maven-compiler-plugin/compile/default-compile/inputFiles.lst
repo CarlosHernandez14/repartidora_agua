@@ -11,4 +11,9 @@ C:\Users\carlo\Documents\NetBeansProjects\RepartidoraAgua\src\main\java\com\myco
 C:\Users\carlo\Documents\NetBeansProjects\RepartidoraAgua\src\main\java\com\mycompany\domain\Zona.java
 C:\Users\carlo\Documents\NetBeansProjects\RepartidoraAgua\src\main\java\com\mycompany\repartidoraagua\RepartidoraAgua.java
 C:\Users\carlo\Documents\NetBeansProjects\RepartidoraAgua\src\main\java\com\mycompany\repartidoraagua\TestClass.java
-C:\Users\carlo\Documents\NetBeansProjects\RepartidoraAgua\src\main\java\com\mycompany\views\HomeOperador.java
+C:\Users\carlo\Documents\NetBeansProjects\RepartidoraAgua\src\main\java\com\mycompany\views\operador\HomeOperador.java
+C:\Users\carlo\Documents\NetBeansProjects\RepartidoraAgua\src\main\java\com\mycompany\views\repartidor\HomeRepartidor.java
+C:\Users\carlo\Documents\NetBeansProjects\RepartidoraAgua\src\main\java\com\mycompany\vistas\Login.java
+C:\Users\carlo\Documents\NetBeansProjects\RepartidoraAgua\src\main\java\com\mycompany\vistas\PanelImageRedondeado.java
+C:\Users\carlo\Documents\NetBeansProjects\RepartidoraAgua\src\main\java\com\mycompany\vistas\RoundedPanel.java
+C:\Users\carlo\Documents\NetBeansProjects\RepartidoraAgua\src\main\java\com\mycompany\vistas\SignUp.java

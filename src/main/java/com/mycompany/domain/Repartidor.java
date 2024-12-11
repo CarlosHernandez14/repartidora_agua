@@ -32,12 +32,12 @@ public class Repartidor extends Usuario implements Serializable{
     }
     
     // CONSTRUCTOR PARA CREACION
-    public Repartidor(String telefono, int idCamion, String nombre, String correo, String contrasena, Rol rol, boolean activo, String nombreCompleto) {
-        super(nombre, correo, contrasena, rol, activo);
+    public Repartidor(String nombre_completo, String telefono, String nombre, String correo, String contrasena) {
+        super(nombre, correo, contrasena, Rol.REPARTIDOR);
+        this.nombre_completo = nombre_completo;
         this.telefono = telefono;
-        this.idCamion = idCamion;
-        this.nombre_completo = nombreCompleto;
     }
+    
 
     public int getIdRepartidor() {
         return idRepartidor;

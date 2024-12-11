@@ -215,7 +215,7 @@ public class WSManager {
             jsonUser.put("correo", usuario.getCorreo());
             jsonUser.put("contrasena", usuario.getContrasena());
             jsonUser.put("rol", usuario.getRol().toString());
-            jsonUser.put("activo", usuario.isActivo());
+            //jsonUser.put("activo", usuario.isActivo());
 
             // Creamos el request
             String result = Request.Post(request_url)
@@ -299,6 +299,51 @@ public class WSManager {
         return null;
     }
 
+    // Metodo para guardar un operador
+    public static int guardarOperador(Operador operador) {
+        String request_url = WSManager.WS_URL + "operadores.php";
+
+        try {
+            // Guardamos el usuario primero
+            Usuario usuario = new Usuario(operador.getNombre(), operador.getCorreo(), operador.getContrasena(),
+                    operador.getRol());
+            int idUsuario = guardarUsuario(usuario);
+
+            if (idUsuario == -1) {
+                throw new Exception("Error al guardar el usuario");
+            }
+
+            // Creamos el objeto JSON a enviar
+            JSONObject jsonOperador = new JSONObject();
+            jsonOperador.put("nombre_completo", operador.getNombre_completo());
+            jsonOperador.put("horario", operador.getHorario());
+            jsonOperador.put("idUsuario", idUsuario);
+
+            // Creamos el request
+            String result = Request.Post(request_url)
+                    .bodyString(jsonOperador.toJSONString(), ContentType.APPLICATION_JSON)
+                    .execute().returnContent().asString();
+
+            JSONParser parser = new JSONParser();
+            JSONObject jsonResponse = (JSONObject) parser.parse(result);
+
+            if (!Boolean.parseBoolean(jsonResponse.get("OK").toString())) {
+                String error = (String) jsonResponse.get("error");
+                throw new Exception("Ocurrio un error en la peticion:" + error);
+            }
+
+            return Integer.parseInt((String) jsonResponse.get("data"));
+
+        } catch (IOException e) {
+            System.out.println("IO ERROR en la solicitud: " + e.getMessage());
+        } catch (ParseException ex) {
+            System.out.println("Error al parsear el json response:" + ex.getMessage());
+        } catch (Exception ex) {
+            System.out.println("Error al guardar el operador" + ex.getMessage());
+        }
+        return -1;
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     /// Metodos para manejar los repartidores
     // Metodo para obtener los repartidores
@@ -367,7 +412,7 @@ public class WSManager {
         try {
             // Guardamos el usuario primero
             Usuario usuario = new Usuario(repartidor.getNombre(), repartidor.getCorreo(), repartidor.getContrasena(),
-                    repartidor.getRol(), repartidor.isActivo());
+                    repartidor.getRol());
             
             // Guardamos el usuario
             int idUsuario = guardarUsuario(usuario);
@@ -381,7 +426,7 @@ public class WSManager {
             jsonRepartidor.put("nombre_completo", repartidor.getNombre_completo());
             jsonRepartidor.put("telefono", repartidor.getTelefono());
             jsonRepartidor.put("idUsuario", idUsuario);
-            jsonRepartidor.put("idCamion", repartidor.getIdCamion());
+            //jsonRepartidor.put("idCamion", repartidor.getIdCamion());
 
 
             // Creamos el request

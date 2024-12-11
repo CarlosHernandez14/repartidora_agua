@@ -22,7 +22,8 @@ public class Usuario implements Serializable{
     public Usuario(){
         
     }
-
+    
+    // CONSTRUCTOR PARA LECTURA 
     public Usuario(int id, String nombre, String correo, String contrasena, Rol rol, boolean activo) {
         this.id = id;
         this.nombre = nombre;
@@ -39,6 +40,16 @@ public class Usuario implements Serializable{
         this.rol = rol;
         this.activo = activo;
     }
+    
+    // CONSTRUCTOR PARA CREACION 
+
+    public Usuario(String nombre, String correo, String contrasena, Rol rol) {
+        this.nombre = nombre;
+        this.correo = correo;
+        this.contrasena = contrasena;
+        this.rol = rol;
+    }
+    
 
     public int getId() {
         return id;
