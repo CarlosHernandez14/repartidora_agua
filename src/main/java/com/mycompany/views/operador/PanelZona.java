@@ -4,17 +4,41 @@
  */
 package com.mycompany.views.operador;
 
+import com.mycompany.dao.WSManager;
+import com.mycompany.domain.Colonia;
+import com.mycompany.domain.Zona;
+import java.util.ArrayList;
+
 /**
  *
  * @author carlo
  */
 public class PanelZona extends javax.swing.JPanel {
 
+    private Zona zona;
+    private ArrayList<Colonia> colonias;
     /**
      * Creates new form PanelZona
      */
     public PanelZona() {
         initComponents();
+        
+    }
+    
+    public PanelZona(Zona zona) {
+        initComponents();
+        
+        this.zona = zona;
+        
+        initData();
+    }
+    
+    private void initData() {
+        // Consultamos las colonias de la zona
+        colonias = (ArrayList<Colonia>) WSManager.getColoniasByZona(zona.getIdZona());
+        
+        this.labelNombreZona.setText(this.zona.getNombre());
+        this.labelCoordenadas.setText("[" + this.zona.getCoordenadas_x() + ", " + this.zona.getCoordenadas_y() + "]");
     }
 
     /**
@@ -26,19 +50,120 @@ public class PanelZona extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanel1 = new javax.swing.JPanel();
+        labelColonia = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        labelCoordenadas = new javax.swing.JLabel();
+        jSeparator1 = new javax.swing.JSeparator();
+        labelNombreZona = new javax.swing.JLabel();
+        scrollColonias = new javax.swing.JScrollPane();
+        containerColonias = new javax.swing.JPanel();
+
+        setBackground(new java.awt.Color(255, 255, 255));
+
+        jPanel1.setBackground(new java.awt.Color(0, 153, 255));
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 210, Short.MAX_VALUE)
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+
+        labelColonia.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        labelColonia.setForeground(new java.awt.Color(102, 102, 102));
+        labelColonia.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        labelColonia.setText("Colonias");
+
+        jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel4.setForeground(new java.awt.Color(102, 102, 102));
+        jLabel4.setText("Coordenadas:");
+
+        labelCoordenadas.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        labelCoordenadas.setForeground(new java.awt.Color(102, 102, 102));
+        labelCoordenadas.setText("Coordenadas:");
+
+        labelNombreZona.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        labelNombreZona.setForeground(new java.awt.Color(102, 102, 102));
+        labelNombreZona.setText("NombreZona");
+
+        scrollColonias.setBackground(new java.awt.Color(255, 255, 255));
+        scrollColonias.setBorder(null);
+
+        containerColonias.setBackground(new java.awt.Color(255, 255, 255));
+
+        javax.swing.GroupLayout containerColoniasLayout = new javax.swing.GroupLayout(containerColonias);
+        containerColonias.setLayout(containerColoniasLayout);
+        containerColoniasLayout.setHorizontalGroup(
+            containerColoniasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 388, Short.MAX_VALUE)
+        );
+        containerColoniasLayout.setVerticalGroup(
+            containerColoniasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 134, Short.MAX_VALUE)
+        );
+
+        scrollColonias.setViewportView(containerColonias);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(4, 4, 4)
+                        .addComponent(jSeparator1))
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(scrollColonias)
+                            .addComponent(labelColonia, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(labelNombreZona, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(216, 216, 216)
+                .addComponent(jLabel4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(labelCoordenadas)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(labelNombreZona)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(labelCoordenadas))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(labelColonia)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(scrollColonias)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel containerColonias;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JLabel labelColonia;
+    private javax.swing.JLabel labelCoordenadas;
+    private javax.swing.JLabel labelNombreZona;
+    private javax.swing.JScrollPane scrollColonias;
     // End of variables declaration//GEN-END:variables
 }
