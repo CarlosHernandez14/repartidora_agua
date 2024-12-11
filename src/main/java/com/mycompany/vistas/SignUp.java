@@ -38,7 +38,7 @@ public class SignUp extends javax.swing.JFrame {
 
         panelImage1 = new org.edisoncor.gui.panel.PanelImage();
         btnRegister = new javax.swing.JButton();
-        labelRegistrate = new javax.swing.JLabel();
+        labelLogin = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         panelImageLogo7 = new PanelImageRedondeado();
         containerInputs = new RoundedPanel(20);
@@ -71,12 +71,12 @@ public class SignUp extends javax.swing.JFrame {
             }
         });
 
-        labelRegistrate.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        labelRegistrate.setForeground(new java.awt.Color(0, 102, 204));
-        labelRegistrate.setText("Inicia sesion");
-        labelRegistrate.addMouseListener(new java.awt.event.MouseAdapter() {
+        labelLogin.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        labelLogin.setForeground(new java.awt.Color(0, 102, 204));
+        labelLogin.setText("Inicia sesion");
+        labelLogin.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                labelRegistrateMouseClicked(evt);
+                labelLoginMouseClicked(evt);
             }
         });
 
@@ -224,7 +224,7 @@ public class SignUp extends javax.swing.JFrame {
                         .addGap(62, 62, 62)
                         .addComponent(jLabel6)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(labelRegistrate))
+                        .addComponent(labelLogin))
                     .addGroup(panelImage1Layout.createSequentialGroup()
                         .addGap(108, 108, 108)
                         .addComponent(panelImageLogo7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -242,7 +242,7 @@ public class SignUp extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(panelImage1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
-                    .addComponent(labelRegistrate))
+                    .addComponent(labelLogin))
                 .addGap(39, 39, 39))
         );
 
@@ -307,12 +307,12 @@ public class SignUp extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnRegisterActionPerformed
 
-    private void labelRegistrateMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_labelRegistrateMouseClicked
+    private void labelLoginMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_labelLoginMouseClicked
         // TODO add your handling code here:
 
         // Mandamos al usuario al registro
         new Login().setVisible(true);
-    }//GEN-LAST:event_labelRegistrateMouseClicked
+    }//GEN-LAST:event_labelLoginMouseClicked
 
     private void selectUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectUserActionPerformed
         // TODO add your handling code here:
@@ -370,15 +370,8 @@ public class SignUp extends javax.swing.JFrame {
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSeparator jSeparator3;
-    private javax.swing.JLabel labelRegistrate;
+    private javax.swing.JLabel labelLogin;
     private org.edisoncor.gui.panel.PanelImage panelImage1;
-    private org.edisoncor.gui.panel.PanelImage panelImageLogo;
-    private org.edisoncor.gui.panel.PanelImage panelImageLogo1;
-    private org.edisoncor.gui.panel.PanelImage panelImageLogo2;
-    private org.edisoncor.gui.panel.PanelImage panelImageLogo3;
-    private org.edisoncor.gui.panel.PanelImage panelImageLogo4;
-    private org.edisoncor.gui.panel.PanelImage panelImageLogo5;
-    private org.edisoncor.gui.panel.PanelImage panelImageLogo6;
     private org.edisoncor.gui.panel.PanelImage panelImageLogo7;
     private javax.swing.JComboBox<String> selectUser;
     // End of variables declaration//GEN-END:variables

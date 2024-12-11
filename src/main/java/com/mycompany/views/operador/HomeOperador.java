@@ -4,34 +4,58 @@
  */
 package com.mycompany.views.operador;
 
+import com.mycompany.dao.WSManager;
 import com.mycompany.domain.Operador;
+import com.mycompany.domain.Zona;
 import com.mycompany.vistas.Login;
 import com.mycompany.vistas.PanelImageRedondeado;
-
+import java.util.ArrayList;
+import javax.swing.BoxLayout;
 
 public class HomeOperador extends javax.swing.JFrame {
 
     private Operador operador;
+    private ArrayList<Zona> zonas;
 
     /**
      * Creates new form HomeOperador
      */
     public HomeOperador() {
         initComponents();
-        
+
         this.setLocationRelativeTo(null);
     }
-    
+
     public HomeOperador(Operador operador) {
         initComponents();
         this.operador = operador;
         this.setLocationRelativeTo(null);
-        
+
+        this.containerZonas.setLayout(new BoxLayout(this.containerZonas, BoxLayout.Y_AXIS));
         initData();
     }
-    
+
     private void initData() {
         this.labelUsername.setText(this.operador.getNombre_completo());
+        
+        loadZonas();
+
+    }
+
+    private void loadZonas() {
+        // Seteamos laz zonas ene l scroll pane
+        this.zonas = (ArrayList<Zona>) WSManager.getZonas();
+        this.containerZonas.removeAll();
+        
+        for (Zona zona : zonas) {
+            PanelZona panelZona = new PanelZona(zona);
+            
+            // Agregamos el panel al container
+            this.containerZonas.add(panelZona);
+        }
+        
+        this.containerZonas.revalidate();
+        this.containerZonas.repaint();
     }
 
     /**

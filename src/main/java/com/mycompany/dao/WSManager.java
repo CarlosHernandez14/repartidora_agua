@@ -326,6 +326,8 @@ public class WSManager {
 
             JSONParser parser = new JSONParser();
             JSONObject jsonResponse = (JSONObject) parser.parse(result);
+            
+            System.out.println("JSON RESPONSE:" + jsonResponse.toString());
 
             if (!Boolean.parseBoolean(jsonResponse.get("OK").toString())) {
                 String error = (String) jsonResponse.get("error");
