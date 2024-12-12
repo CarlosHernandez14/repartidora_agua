@@ -7,38 +7,125 @@ package com.mycompany.views.operador;
 import com.mycompany.dao.WSManager;
 import com.mycompany.domain.Colonia;
 import com.mycompany.domain.Zona;
+import com.mycompany.vistas.RoundedPanel;
+import java.awt.Dimension;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import javax.swing.BoxLayout;
+import javax.swing.JFrame;
+import org.jxmapviewer.JXMapViewer;
+import org.jxmapviewer.OSMTileFactoryInfo;
+import org.jxmapviewer.painter.CompoundPainter;
+import org.jxmapviewer.painter.Painter;
+import org.jxmapviewer.viewer.DefaultTileFactory;
+import org.jxmapviewer.viewer.DefaultWaypoint;
+import org.jxmapviewer.viewer.GeoPosition;
+import org.jxmapviewer.viewer.TileFactoryInfo;
+import org.jxmapviewer.viewer.Waypoint;
+import org.jxmapviewer.viewer.WaypointPainter;
+import javax.swing.Box;
 
 /**
  *
  * @author carlo
  */
-public class PanelZona extends javax.swing.JPanel {
+public class PanelZona extends RoundedPanel {
 
     private Zona zona;
     private ArrayList<Colonia> colonias;
+
     /**
      * Creates new form PanelZona
      */
     public PanelZona() {
+        super(20);
         initComponents();
-        
+
     }
-    
+
     public PanelZona(Zona zona) {
+        super(20);
         initComponents();
-        
+
         this.zona = zona;
-        
+        this.containerColonias.setLayout(new BoxLayout(this.containerColonias, BoxLayout.Y_AXIS));
+
         initData();
+
+        initColonias();
+        
+        initMap();
+    }
+
+    private void initData() {
+
+        this.labelNombreZona.setText(this.zona.getNombre());
+        this.labelCoordenadas.setText("[" + this.zona.getCoordenadas_x() + ", " + this.zona.getCoordenadas_y() + "]");
+    }
+
+    private void initMap() {
+        this.containerMap.removeAll();
+        
+        JXMapViewer mapViewer = new JXMapViewer();
+
+        // Create a TileFactoryInfo for OpenStreetMap
+        TileFactoryInfo info = new OSMTileFactoryInfo();
+        DefaultTileFactory tileFactory = new DefaultTileFactory(info);
+        mapViewer.setTileFactory(tileFactory);
+
+        // Use 8 threads in parallel to load the tiles
+        tileFactory.setThreadPoolSize(8);
+
+        // Set the focus
+        GeoPosition positionZona = new GeoPosition(
+                Double.parseDouble(this.zona.getCoordenadas_x()),
+                Double.parseDouble(this.zona.getCoordenadas_y())
+        );
+
+        mapViewer.setZoom(4);
+        mapViewer.setAddressLocation(positionZona);
+        
+        // Create waypoints from the geo-positions
+        Set<Waypoint> waypoints = new HashSet<Waypoint>(Arrays.asList(
+                new DefaultWaypoint(positionZona)));
+
+        // Create a waypoint painter that takes all the waypoints
+        WaypointPainter<Waypoint> waypointPainter = new WaypointPainter<Waypoint>();
+        waypointPainter.setWaypoints(waypoints);
+        
+        // Create a compound painter that uses both the route-painter and the waypoint-painter
+        List<Painter<JXMapViewer>> painters = new ArrayList<Painter<JXMapViewer>>();
+        painters.add(waypointPainter);
+
+        CompoundPainter<JXMapViewer> painter = new CompoundPainter<JXMapViewer>(painters);
+        mapViewer.setOverlayPainter(painter);
+        
+        
+        // Display the viewer in a JFrame
+        mapViewer.setBounds(0, 0, 198, 231);
+        this.containerMap.add(mapViewer);
+        this.containerMap.revalidate();
+        this.containerMap.repaint();
     }
     
-    private void initData() {
+    private void initColonias() {
+        this.containerColonias.removeAll();
         // Consultamos las colonias de la zona
         colonias = (ArrayList<Colonia>) WSManager.getColoniasByZona(zona.getIdZona());
         
-        this.labelNombreZona.setText(this.zona.getNombre());
-        this.labelCoordenadas.setText("[" + this.zona.getCoordenadas_x() + ", " + this.zona.getCoordenadas_y() + "]");
+        for (Colonia colonia : colonias) {
+            PanelColonia panelColonia = new PanelColonia(colonia);
+            
+            
+            this.containerColonias.add(panelColonia);
+            this.containerColonias.add(Box.createRigidArea(new Dimension(0, 5)));
+        }
+        
+        this.containerColonias.revalidate();
+        this.containerColonias.repaint();
     }
 
     /**
@@ -50,7 +137,8 @@ public class PanelZona extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
+        containerBackgroundMap = new RoundedPanel(20);
+        containerMap = new javax.swing.JPanel();
         labelColonia = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         labelCoordenadas = new javax.swing.JLabel();
@@ -58,20 +146,42 @@ public class PanelZona extends javax.swing.JPanel {
         labelNombreZona = new javax.swing.JLabel();
         scrollColonias = new javax.swing.JScrollPane();
         containerColonias = new javax.swing.JPanel();
+        jButton1 = new javax.swing.JButton();
 
-        setBackground(new java.awt.Color(255, 255, 255));
+        setBackground(new java.awt.Color(242, 242, 242));
+        setMaximumSize(new java.awt.Dimension(610, 243));
+        setMinimumSize(new java.awt.Dimension(610, 243));
 
-        jPanel1.setBackground(new java.awt.Color(0, 153, 255));
+        containerBackgroundMap.setBackground(new java.awt.Color(0, 153, 255));
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 210, Short.MAX_VALUE)
+        containerMap.setBackground(new java.awt.Color(0, 153, 255));
+
+        javax.swing.GroupLayout containerMapLayout = new javax.swing.GroupLayout(containerMap);
+        containerMap.setLayout(containerMapLayout);
+        containerMapLayout.setHorizontalGroup(
+            containerMapLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 198, Short.MAX_VALUE)
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        containerMapLayout.setVerticalGroup(
+            containerMapLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 0, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout containerBackgroundMapLayout = new javax.swing.GroupLayout(containerBackgroundMap);
+        containerBackgroundMap.setLayout(containerBackgroundMapLayout);
+        containerBackgroundMapLayout.setHorizontalGroup(
+            containerBackgroundMapLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(containerBackgroundMapLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(containerMap, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        containerBackgroundMapLayout.setVerticalGroup(
+            containerBackgroundMapLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(containerBackgroundMapLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(containerMap, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         labelColonia.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -93,8 +203,9 @@ public class PanelZona extends javax.swing.JPanel {
 
         scrollColonias.setBackground(new java.awt.Color(255, 255, 255));
         scrollColonias.setBorder(null);
+        scrollColonias.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
-        containerColonias.setBackground(new java.awt.Color(255, 255, 255));
+        containerColonias.setBackground(new java.awt.Color(242, 242, 242));
 
         javax.swing.GroupLayout containerColoniasLayout = new javax.swing.GroupLayout(containerColonias);
         containerColonias.setLayout(containerColoniasLayout);
@@ -109,24 +220,32 @@ public class PanelZona extends javax.swing.JPanel {
 
         scrollColonias.setViewportView(containerColonias);
 
+        jButton1.setBackground(new java.awt.Color(0, 153, 255));
+        jButton1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jButton1.setForeground(new java.awt.Color(255, 255, 255));
+        jButton1.setText("+ Agregar colonia");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(containerBackgroundMap, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(4, 4, 4)
                         .addComponent(jSeparator1))
                     .addGroup(layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(scrollColonias)
-                            .addComponent(labelColonia, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(scrollColonias))
                     .addGroup(layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(labelNombreZona, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(labelNombreZona, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(labelColonia, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(216, 216, 216)
@@ -137,7 +256,7 @@ public class PanelZona extends javax.swing.JPanel {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(containerBackgroundMap, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(labelNombreZona)
@@ -148,7 +267,9 @@ public class PanelZona extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(labelColonia)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(labelColonia)
+                    .addComponent(jButton1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(scrollColonias)
                 .addContainerGap())
@@ -157,9 +278,11 @@ public class PanelZona extends javax.swing.JPanel {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel containerBackgroundMap;
     private javax.swing.JPanel containerColonias;
+    private javax.swing.JPanel containerMap;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JLabel labelColonia;
     private javax.swing.JLabel labelCoordenadas;

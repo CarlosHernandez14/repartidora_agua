@@ -6,16 +6,22 @@ package com.mycompany.views.operador;
 
 import com.mycompany.dao.WSManager;
 import com.mycompany.domain.Operador;
+import com.mycompany.domain.Pedido;
+import com.mycompany.domain.Repartidor;
 import com.mycompany.domain.Zona;
 import com.mycompany.vistas.Login;
 import com.mycompany.vistas.PanelImageRedondeado;
+import java.awt.Dimension;
 import java.util.ArrayList;
 import javax.swing.BoxLayout;
+import javax.swing.Box;
 
 public class HomeOperador extends javax.swing.JFrame {
 
     private Operador operador;
     private ArrayList<Zona> zonas;
+    private ArrayList<Repartidor> repartidores;
+    private ArrayList<Pedido> pedidos;
 
     /**
      * Creates new form HomeOperador
@@ -31,7 +37,10 @@ public class HomeOperador extends javax.swing.JFrame {
         this.operador = operador;
         this.setLocationRelativeTo(null);
 
-        this.containerZonas.setLayout(new BoxLayout(this.containerZonas, BoxLayout.Y_AXIS));
+        this.containerListZonas.setLayout(new BoxLayout(this.containerListZonas, BoxLayout.Y_AXIS));
+        this.containerListRepartidores.setLayout(new BoxLayout(this.containerListRepartidores, BoxLayout.Y_AXIS));
+        this.containerListPedidos.setLayout(new  BoxLayout(this.containerListPedidos, BoxLayout.Y_AXIS));
+        
         initData();
     }
 
@@ -39,23 +48,65 @@ public class HomeOperador extends javax.swing.JFrame {
         this.labelUsername.setText(this.operador.getNombre_completo());
         
         loadZonas();
-
+        loadRepartidores();
+        loadPedidos();
     }
 
     private void loadZonas() {
         // Seteamos laz zonas ene l scroll pane
         this.zonas = (ArrayList<Zona>) WSManager.getZonas();
-        this.containerZonas.removeAll();
+        this.containerListZonas.removeAll();
         
         for (Zona zona : zonas) {
             PanelZona panelZona = new PanelZona(zona);
+
+            // Establecemos el tamaño del panel
+//            panelZona.setSize(662, 100);
+//            panelZona.setMaximumSize(panelZona.getSize());
+//            panelZona.setMinimumSize(panelZona.getSize());
+//            panelZona.setPreferredSize(panelZona.getSize());
             
             // Agregamos el panel al container
-            this.containerZonas.add(panelZona);
+            this.containerListZonas.add(panelZona);
         }
         
-        this.containerZonas.revalidate();
-        this.containerZonas.repaint();
+        this.containerListZonas.revalidate();
+        this.containerListZonas.repaint();
+    }
+    
+    private void loadRepartidores() {
+        
+        this.containerListRepartidores.removeAll();
+        // Set repas
+        this.repartidores = (ArrayList <Repartidor>) WSManager.getRepartidores();
+        
+        for (Repartidor repa : repartidores) {
+            PanelRepartidor panelRepa = new PanelRepartidor(repa);
+            
+            this.containerListRepartidores.add(panelRepa);
+            this.containerListRepartidores.add(Box.createRigidArea(new Dimension(0, 10)));
+        }
+        
+        this.containerListRepartidores.revalidate();
+        this.containerListRepartidores.repaint();
+    }
+    
+    private void loadPedidos() {
+        this.containerListPedidos.removeAll();
+
+        // Set pedidos
+        this.pedidos = (ArrayList <Pedido>) WSManager.getPedidos();
+
+        for (Pedido pedido : pedidos) {
+            PanelPedido panelPedido = new PanelPedido(pedido);
+
+            this.containerListPedidos.add(panelPedido);
+            this.containerListPedidos.add(Box.createRigidArea(new Dimension(0, 10)));
+        }
+
+        this.containerListPedidos.revalidate();
+        this.containerListPedidos.repaint();
+        
     }
 
     /**
@@ -77,15 +128,23 @@ public class HomeOperador extends javax.swing.JFrame {
         labelUsername = new javax.swing.JLabel();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         containerPedidos = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        jSeparator3 = new javax.swing.JSeparator();
+        btnAddPedido = new javax.swing.JButton();
+        scrollPedidos = new javax.swing.JScrollPane();
+        containerListPedidos = new javax.swing.JPanel();
         containerZonas = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
-        jButton1 = new javax.swing.JButton();
+        btnAddZona = new javax.swing.JButton();
         scrollZonas = new javax.swing.JScrollPane();
         containerListZonas = new javax.swing.JPanel();
         containerRepartidores = new javax.swing.JPanel();
-        jLabel3 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        jSeparator2 = new javax.swing.JSeparator();
+        btnAddRepa = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        containerListRepartidores = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -207,41 +266,86 @@ public class HomeOperador extends javax.swing.JFrame {
 
         containerPedidos.setBackground(new java.awt.Color(255, 255, 255));
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jLabel1.setText("PEDIDOS");
+        jLabel6.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jLabel6.setForeground(new java.awt.Color(0, 153, 255));
+        jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel6.setText("Pedidos");
+
+        btnAddPedido.setBackground(new java.awt.Color(0, 153, 255));
+        btnAddPedido.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnAddPedido.setForeground(new java.awt.Color(255, 255, 255));
+        btnAddPedido.setText("Crear nuevo pedido");
+
+        scrollPedidos.setBackground(new java.awt.Color(255, 255, 255));
+        scrollPedidos.setBorder(null);
+
+        containerListPedidos.setBackground(new java.awt.Color(255, 255, 255));
+
+        javax.swing.GroupLayout containerListPedidosLayout = new javax.swing.GroupLayout(containerListPedidos);
+        containerListPedidos.setLayout(containerListPedidosLayout);
+        containerListPedidosLayout.setHorizontalGroup(
+            containerListPedidosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 662, Short.MAX_VALUE)
+        );
+        containerListPedidosLayout.setVerticalGroup(
+            containerListPedidosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 430, Short.MAX_VALUE)
+        );
+
+        scrollPedidos.setViewportView(containerListPedidos);
 
         javax.swing.GroupLayout containerPedidosLayout = new javax.swing.GroupLayout(containerPedidos);
         containerPedidos.setLayout(containerPedidosLayout);
         containerPedidosLayout.setHorizontalGroup(
             containerPedidosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(containerPedidosLayout.createSequentialGroup()
-                .addGap(286, 286, 286)
-                .addComponent(jLabel1)
-                .addContainerGap(314, Short.MAX_VALUE))
+                .addContainerGap()
+                .addGroup(containerPedidosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(scrollPedidos)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, containerPedidosLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnAddPedido, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(containerPedidosLayout.createSequentialGroup()
+                        .addGroup(containerPedidosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 662, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, 662, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         containerPedidosLayout.setVerticalGroup(
             containerPedidosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(containerPedidosLayout.createSequentialGroup()
-                .addGap(237, 237, 237)
-                .addComponent(jLabel1)
-                .addContainerGap(293, Short.MAX_VALUE))
+                .addGap(16, 16, 16)
+                .addComponent(jLabel6)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnAddPedido, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(scrollPedidos)
+                .addContainerGap())
         );
 
         jTabbedPane1.addTab("Pedidos", containerPedidos);
 
         containerZonas.setBackground(new java.awt.Color(255, 255, 255));
+        containerZonas.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(0, 153, 255));
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel4.setText("ZONAS DE REPARTO");
+        containerZonas.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 18, 662, -1));
+        containerZonas.add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 55, 662, 10));
 
-        jButton1.setBackground(new java.awt.Color(0, 153, 255));
-        jButton1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jButton1.setForeground(new java.awt.Color(255, 255, 255));
-        jButton1.setText("+ Agregar zona");
+        btnAddZona.setBackground(new java.awt.Color(0, 153, 255));
+        btnAddZona.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnAddZona.setForeground(new java.awt.Color(255, 255, 255));
+        btnAddZona.setText("+ Agregar zona");
+        containerZonas.add(btnAddZona, new org.netbeans.lib.awtextra.AbsoluteConstraints(494, 71, 174, 32));
 
         scrollZonas.setBackground(new java.awt.Color(255, 255, 255));
+        scrollZonas.setBorder(null);
 
         containerListZonas.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -253,62 +357,75 @@ public class HomeOperador extends javax.swing.JFrame {
         );
         containerListZonasLayout.setVerticalGroup(
             containerListZonasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 426, Short.MAX_VALUE)
+            .addGap(0, 428, Short.MAX_VALUE)
         );
 
         scrollZonas.setViewportView(containerListZonas);
 
-        javax.swing.GroupLayout containerZonasLayout = new javax.swing.GroupLayout(containerZonas);
-        containerZonas.setLayout(containerZonasLayout);
-        containerZonasLayout.setHorizontalGroup(
-            containerZonasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(containerZonasLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(containerZonasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(scrollZonas)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jSeparator1)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, containerZonasLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
-        );
-        containerZonasLayout.setVerticalGroup(
-            containerZonasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(containerZonasLayout.createSequentialGroup()
-                .addGap(18, 18, 18)
-                .addComponent(jLabel4)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(scrollZonas)
-                .addContainerGap())
-        );
+        containerZonas.add(scrollZonas, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 121, -1, -1));
 
         jTabbedPane1.addTab("Zonas", containerZonas);
 
         containerRepartidores.setBackground(new java.awt.Color(255, 255, 255));
 
-        jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jLabel3.setText("REPARTIDORES");
+        jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jLabel5.setForeground(new java.awt.Color(0, 153, 255));
+        jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel5.setText("REPARTIDORES");
+
+        btnAddRepa.setBackground(new java.awt.Color(0, 153, 255));
+        btnAddRepa.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnAddRepa.setForeground(new java.awt.Color(255, 255, 255));
+        btnAddRepa.setText("+ Agregar repartidor");
+
+        jScrollPane1.setBackground(new java.awt.Color(255, 255, 255));
+        jScrollPane1.setBorder(null);
+
+        containerListRepartidores.setBackground(new java.awt.Color(255, 255, 255));
+
+        javax.swing.GroupLayout containerListRepartidoresLayout = new javax.swing.GroupLayout(containerListRepartidores);
+        containerListRepartidores.setLayout(containerListRepartidoresLayout);
+        containerListRepartidoresLayout.setHorizontalGroup(
+            containerListRepartidoresLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 662, Short.MAX_VALUE)
+        );
+        containerListRepartidoresLayout.setVerticalGroup(
+            containerListRepartidoresLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 430, Short.MAX_VALUE)
+        );
+
+        jScrollPane1.setViewportView(containerListRepartidores);
 
         javax.swing.GroupLayout containerRepartidoresLayout = new javax.swing.GroupLayout(containerRepartidores);
         containerRepartidores.setLayout(containerRepartidoresLayout);
         containerRepartidoresLayout.setHorizontalGroup(
             containerRepartidoresLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(containerRepartidoresLayout.createSequentialGroup()
-                .addGap(286, 286, 286)
-                .addComponent(jLabel3)
-                .addContainerGap(264, Short.MAX_VALUE))
+                .addContainerGap()
+                .addGroup(containerRepartidoresLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, containerRepartidoresLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnAddRepa, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(containerRepartidoresLayout.createSequentialGroup()
+                        .addGroup(containerRepartidoresLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 662, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 662, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         containerRepartidoresLayout.setVerticalGroup(
             containerRepartidoresLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(containerRepartidoresLayout.createSequentialGroup()
-                .addGap(237, 237, 237)
-                .addComponent(jLabel3)
-                .addContainerGap(293, Short.MAX_VALUE))
+                .addGap(16, 16, 16)
+                .addComponent(jLabel5)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnAddRepa, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1)
+                .addContainerGap())
         );
 
         jTabbedPane1.addTab("Repartidores", containerRepartidores);
@@ -388,23 +505,31 @@ public class HomeOperador extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bntRepartidores;
+    private javax.swing.JButton btnAddPedido;
+    private javax.swing.JButton btnAddRepa;
+    private javax.swing.JButton btnAddZona;
     private javax.swing.JButton btnLogout;
     private javax.swing.JButton btnPedidos;
     private javax.swing.JButton btnZonas;
     private javax.swing.JPanel containerHome;
+    private javax.swing.JPanel containerListPedidos;
+    private javax.swing.JPanel containerListRepartidores;
     private javax.swing.JPanel containerListZonas;
     private javax.swing.JPanel containerPedidos;
     private javax.swing.JPanel containerRepartidores;
     private javax.swing.JPanel containerZonas;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JSeparator jSeparator2;
+    private javax.swing.JSeparator jSeparator3;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JLabel labelUsername;
     private org.edisoncor.gui.panel.PanelImage panelImageLogo7;
+    private javax.swing.JScrollPane scrollPedidos;
     private javax.swing.JScrollPane scrollZonas;
     // End of variables declaration//GEN-END:variables
 }
