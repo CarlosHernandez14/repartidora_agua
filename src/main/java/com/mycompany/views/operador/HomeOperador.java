@@ -55,7 +55,11 @@ public class HomeOperador extends javax.swing.JFrame {
         containerPedidos = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         containerZonas = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
+        jSeparator1 = new javax.swing.JSeparator();
+        jLabel4 = new javax.swing.JLabel();
+        btnAddZona = new javax.swing.JButton();
+        scrollPaneZonas = new javax.swing.JScrollPane();
+        containerListZonas = new javax.swing.JPanel();
         containerRepartidores = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
 
@@ -189,7 +193,7 @@ public class HomeOperador extends javax.swing.JFrame {
             .addGroup(containerPedidosLayout.createSequentialGroup()
                 .addGap(286, 286, 286)
                 .addComponent(jLabel1)
-                .addContainerGap(314, Short.MAX_VALUE))
+                .addContainerGap(455, Short.MAX_VALUE))
         );
         containerPedidosLayout.setVerticalGroup(
             containerPedidosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -202,25 +206,73 @@ public class HomeOperador extends javax.swing.JFrame {
         jTabbedPane1.addTab("Pedidos", containerPedidos);
 
         containerZonas.setBackground(new java.awt.Color(255, 255, 255));
+        containerZonas.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
 
-        jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jLabel2.setText("ZONAS");
+        jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jLabel4.setForeground(new java.awt.Color(0, 153, 255));
+        jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel4.setText("ZONAS DE REPARTO");
+
+        btnAddZona.setBackground(new java.awt.Color(0, 153, 255));
+        btnAddZona.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnAddZona.setForeground(new java.awt.Color(255, 255, 255));
+        btnAddZona.setText("Agregar zona");
+        btnAddZona.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddZonaActionPerformed(evt);
+            }
+        });
+
+        scrollPaneZonas.setBackground(new java.awt.Color(255, 255, 255));
+        scrollPaneZonas.setBorder(null);
+
+        containerListZonas.setBackground(new java.awt.Color(255, 255, 255));
+
+        javax.swing.GroupLayout containerListZonasLayout = new javax.swing.GroupLayout(containerListZonas);
+        containerListZonas.setLayout(containerListZonasLayout);
+        containerListZonasLayout.setHorizontalGroup(
+            containerListZonasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 644, Short.MAX_VALUE)
+        );
+        containerListZonasLayout.setVerticalGroup(
+            containerListZonasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 409, Short.MAX_VALUE)
+        );
+
+        scrollPaneZonas.setViewportView(containerListZonas);
 
         javax.swing.GroupLayout containerZonasLayout = new javax.swing.GroupLayout(containerZonas);
         containerZonas.setLayout(containerZonasLayout);
         containerZonasLayout.setHorizontalGroup(
             containerZonasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(containerZonasLayout.createSequentialGroup()
-                .addGap(286, 286, 286)
-                .addComponent(jLabel2)
-                .addContainerGap(329, Short.MAX_VALUE))
+                .addGroup(containerZonasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(containerZonasLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(containerZonasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 652, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, containerZonasLayout.createSequentialGroup()
+                                .addComponent(btnAddZona, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(8, 8, 8))))
+                    .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 650, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 157, Short.MAX_VALUE))
+            .addGroup(containerZonasLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(scrollPaneZonas, javax.swing.GroupLayout.PREFERRED_SIZE, 644, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         containerZonasLayout.setVerticalGroup(
             containerZonasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(containerZonasLayout.createSequentialGroup()
-                .addGap(237, 237, 237)
-                .addComponent(jLabel2)
-                .addContainerGap(293, Short.MAX_VALUE))
+                .addGap(26, 26, 26)
+                .addComponent(jLabel4)
+                .addGap(18, 18, 18)
+                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnAddZona, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(scrollPaneZonas, javax.swing.GroupLayout.PREFERRED_SIZE, 409, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         jTabbedPane1.addTab("Zonas", containerZonas);
@@ -237,7 +289,7 @@ public class HomeOperador extends javax.swing.JFrame {
             .addGroup(containerRepartidoresLayout.createSequentialGroup()
                 .addGap(286, 286, 286)
                 .addComponent(jLabel3)
-                .addContainerGap(264, Short.MAX_VALUE))
+                .addContainerGap(405, Short.MAX_VALUE))
         );
         containerRepartidoresLayout.setVerticalGroup(
             containerRepartidoresLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -287,6 +339,10 @@ public class HomeOperador extends javax.swing.JFrame {
         new Login().setVisible(true);
     }//GEN-LAST:event_btnLogoutActionPerformed
 
+    private void btnAddZonaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddZonaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnAddZonaActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -324,19 +380,23 @@ public class HomeOperador extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bntRepartidores;
+    private javax.swing.JButton btnAddZona;
     private javax.swing.JButton btnLogout;
     private javax.swing.JButton btnPedidos;
     private javax.swing.JButton btnZonas;
     private javax.swing.JPanel containerHome;
+    private javax.swing.JPanel containerListZonas;
     private javax.swing.JPanel containerPedidos;
     private javax.swing.JPanel containerRepartidores;
     private javax.swing.JPanel containerZonas;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JLabel labelUsername;
     private org.edisoncor.gui.panel.PanelImage panelImageLogo7;
+    private javax.swing.JScrollPane scrollPaneZonas;
     // End of variables declaration//GEN-END:variables
 }
