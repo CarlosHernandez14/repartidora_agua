@@ -6,7 +6,7 @@
       <Color blue="f2" green="f2" red="f2" type="rgb"/>
     </Property>
     <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-      <Dimension value="[610, 243]"/>
+      <Dimension value="[3000, 243]"/>
     </Property>
     <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
       <Dimension value="[610, 243]"/>
@@ -46,7 +46,7 @@
                       <EmptySpace max="32767" attributes="0"/>
                       <Component id="labelColonia" min="-2" pref="99" max="-2" attributes="0"/>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Component id="jButton1" min="-2" pref="131" max="-2" attributes="0"/>
+                      <Component id="btnAddCol" min="-2" pref="131" max="-2" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
@@ -76,7 +76,7 @@
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="labelColonia" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="jButton1" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="btnAddCol" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="scrollColonias" max="32767" attributes="0"/>
@@ -221,7 +221,7 @@
         </Container>
       </SubComponents>
     </Container>
-    <Component class="javax.swing.JButton" name="jButton1">
+    <Component class="javax.swing.JButton" name="btnAddCol">
       <Properties>
         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
           <Color blue="ff" green="99" red="0" type="rgb"/>
@@ -234,6 +234,9 @@
         </Property>
         <Property name="text" type="java.lang.String" value="+ Agregar colonia"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnAddColActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

@@ -6,10 +6,12 @@ package com.mycompany.views.operador;
 
 import com.mycompany.dao.WSManager;
 import com.mycompany.domain.Operador;
+import com.mycompany.domain.Pedido;
 import com.mycompany.domain.Repartidor;
 import com.mycompany.domain.Zona;
 import java.util.ArrayList;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -20,6 +22,7 @@ public class CreatePedidoForm extends javax.swing.JFrame {
     private Operador operador;
     private ArrayList<Zona> zonas;
     private ArrayList<Repartidor> repartidores;
+    private HomeOperador homeOperador;
     
     /**
      * Creates new form CreatePedidoForm
@@ -30,9 +33,10 @@ public class CreatePedidoForm extends javax.swing.JFrame {
         this.setLocationRelativeTo(null); 
     }
     
-    public CreatePedidoForm(Operador operador) {
+    public CreatePedidoForm(Operador operador, HomeOperador homeOperador) {
         initComponents();
         this.operador = operador; 
+        this.homeOperador = homeOperador;
         this.setLocationRelativeTo(null); 
         
         initData();
@@ -88,7 +92,7 @@ public class CreatePedidoForm extends javax.swing.JFrame {
         comboRepartidores = new javax.swing.JComboBox<>();
         btnCrearPedido = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -120,7 +124,6 @@ public class CreatePedidoForm extends javax.swing.JFrame {
         fieldCantidadGarr.setBackground(new java.awt.Color(255, 255, 255));
         fieldCantidadGarr.setFont(new java.awt.Font("Segoe UI", 3, 12)); // NOI18N
         fieldCantidadGarr.setForeground(new java.awt.Color(0, 153, 255));
-        fieldCantidadGarr.setText("22");
         fieldCantidadGarr.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 fieldCantidadGarrActionPerformed(evt);
@@ -217,7 +220,46 @@ public class CreatePedidoForm extends javax.swing.JFrame {
         
         int cantidadGarr = Integer.parseInt(this.fieldCantidadGarr.getText());
         String selectedZona = this.comboZonas.getSelectedItem().toString();
+        String selectedRepartidor = this.comboRepartidores.getSelectedItem().toString();
         
+        // Verificamos que la cantidad de garrafones sea mayor a 0
+        if(cantidadGarr <= 0){
+            JOptionPane.showMessageDialog(this, "La cantidad de garrafones debe ser mayor a 0", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Obtenemos el id de la zona seleccionada
+        int idZona = 0;
+        for (Zona zona : zonas) {
+            if(zona.getNombre().equals(selectedZona)){
+                idZona = zona.getIdZona();
+                break;
+            }
+        }
+
+        // Obtenemos el id del repartidor seleccionado
+        int idRepartidor = 0;
+        for (Repartidor repartidor : repartidores) {
+            if(repartidor.getNombre_completo().equals(selectedRepartidor)){
+                idRepartidor = repartidor.getIdRepartidor();
+                break;
+            }
+        }
+
+        // Creamos el pedido
+        Pedido pedido = new Pedido(idZona, cantidadGarr, this.operador.getIdOperador());
+        pedido.setIdRepartidor(idRepartidor);
+
+        // Enviamos el pedido al servidor
+        int idPedido = WSManager.guardarPedido(pedido);
+
+        if(idPedido != -1){
+            JOptionPane.showMessageDialog(this, "Pedido creado correctamente", "Exito", JOptionPane.INFORMATION_MESSAGE);
+            this.homeOperador.loadPedidos();
+            this.dispose();
+        }else{
+            JOptionPane.showMessageDialog(this, "Error al crear el pedido", "Error", JOptionPane.ERROR_MESSAGE);
+        }
         
     }//GEN-LAST:event_btnCrearPedidoActionPerformed
 

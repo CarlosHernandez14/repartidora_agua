@@ -18,6 +18,14 @@
                         'message' => 'Calle obtenida correctamente',
                         'data' => $calle
                     ]);
+                } else if (isset($_GET['idColonia'])) {
+                    $idColonia = $_GET['idColonia'];
+                    $calles = $db->getCallesByColonia($idColonia);
+                    echo json_encode([
+                        'OK' => true,
+                        'message' => 'Calles obtenidas correctamente',
+                        'data' => $calles
+                    ]);
                 } else {
                     $calles = $db->getCalles();
                     echo json_encode([

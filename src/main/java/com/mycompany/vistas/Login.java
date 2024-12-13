@@ -232,6 +232,7 @@ public class Login extends javax.swing.JFrame {
         
         if (usuario instanceof Repartidor) {
             // En caso de que el usuario sea repartidor
+            System.out.println("ES UN REPARTIDOR");
             new HomeRepartidor((Repartidor) usuario).setVisible(true);
             
             this.dispose();

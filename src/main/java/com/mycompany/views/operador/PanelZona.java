@@ -111,7 +111,7 @@ public class PanelZona extends RoundedPanel {
         this.containerMap.repaint();
     }
     
-    private void initColonias() {
+    public void initColonias() {
         this.containerColonias.removeAll();
         // Consultamos las colonias de la zona
         colonias = (ArrayList<Colonia>) WSManager.getColoniasByZona(zona.getIdZona());
@@ -146,10 +146,10 @@ public class PanelZona extends RoundedPanel {
         labelNombreZona = new javax.swing.JLabel();
         scrollColonias = new javax.swing.JScrollPane();
         containerColonias = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
+        btnAddCol = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(242, 242, 242));
-        setMaximumSize(new java.awt.Dimension(610, 243));
+        setMaximumSize(new java.awt.Dimension(3000, 243));
         setMinimumSize(new java.awt.Dimension(610, 243));
 
         containerBackgroundMap.setBackground(new java.awt.Color(0, 153, 255));
@@ -220,10 +220,15 @@ public class PanelZona extends RoundedPanel {
 
         scrollColonias.setViewportView(containerColonias);
 
-        jButton1.setBackground(new java.awt.Color(0, 153, 255));
-        jButton1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jButton1.setForeground(new java.awt.Color(255, 255, 255));
-        jButton1.setText("+ Agregar colonia");
+        btnAddCol.setBackground(new java.awt.Color(0, 153, 255));
+        btnAddCol.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnAddCol.setForeground(new java.awt.Color(255, 255, 255));
+        btnAddCol.setText("+ Agregar colonia");
+        btnAddCol.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddColActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -245,7 +250,7 @@ public class PanelZona extends RoundedPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(labelColonia, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(btnAddCol, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(216, 216, 216)
@@ -269,19 +274,24 @@ public class PanelZona extends RoundedPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(labelColonia)
-                    .addComponent(jButton1))
+                    .addComponent(btnAddCol))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(scrollColonias)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnAddColActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddColActionPerformed
+        // TODO add your handling code here:
+        new CreateColoniaForm(zona, this).setVisible(true);
+    }//GEN-LAST:event_btnAddColActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAddCol;
     private javax.swing.JPanel containerBackgroundMap;
     private javax.swing.JPanel containerColonias;
     private javax.swing.JPanel containerMap;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JLabel labelColonia;

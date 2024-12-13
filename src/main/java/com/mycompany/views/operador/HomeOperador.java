@@ -39,63 +39,60 @@ public class HomeOperador extends javax.swing.JFrame {
 
         this.containerListZonas.setLayout(new BoxLayout(this.containerListZonas, BoxLayout.Y_AXIS));
         this.containerListRepartidores.setLayout(new BoxLayout(this.containerListRepartidores, BoxLayout.Y_AXIS));
-        this.containerListPedidos.setLayout(new  BoxLayout(this.containerListPedidos, BoxLayout.Y_AXIS));
-        
+        this.containerListPedidos.setLayout(new BoxLayout(this.containerListPedidos, BoxLayout.Y_AXIS));
+
         initData();
     }
 
     private void initData() {
         this.labelUsername.setText(this.operador.getNombre_completo());
-        
+
         loadZonas();
         loadRepartidores();
         loadPedidos();
     }
 
-    private void loadZonas() {
-        // Seteamos laz zonas ene l scroll pane
+    public void loadZonas() {
+        // Cargar las zonas desde el WS
         this.zonas = (ArrayList<Zona>) WSManager.getZonas();
         this.containerListZonas.removeAll();
-        
+
         for (Zona zona : zonas) {
             PanelZona panelZona = new PanelZona(zona);
 
-            // Establecemos el tamaño del panel
-//            panelZona.setSize(662, 100);
-//            panelZona.setMaximumSize(panelZona.getSize());
-//            panelZona.setMinimumSize(panelZona.getSize());
-//            panelZona.setPreferredSize(panelZona.getSize());
-            
-            // Agregamos el panel al container
+            // Agregar el panel sin fijar tamaños manualmente
             this.containerListZonas.add(panelZona);
+            this.containerListZonas.add(Box.createRigidArea(new Dimension(0, 10))); // Espaciado
         }
-        
+
+
+        // Actualizar la interfaz
         this.containerListZonas.revalidate();
         this.containerListZonas.repaint();
     }
-    
-    private void loadRepartidores() {
-        
+
+    public void loadRepartidores() {
+
         this.containerListRepartidores.removeAll();
         // Set repas
-        this.repartidores = (ArrayList <Repartidor>) WSManager.getRepartidores();
-        
+        this.repartidores = (ArrayList<Repartidor>) WSManager.getRepartidores();
+
         for (Repartidor repa : repartidores) {
             PanelRepartidor panelRepa = new PanelRepartidor(repa);
-            
+
             this.containerListRepartidores.add(panelRepa);
             this.containerListRepartidores.add(Box.createRigidArea(new Dimension(0, 10)));
         }
-        
+
         this.containerListRepartidores.revalidate();
         this.containerListRepartidores.repaint();
     }
-    
-    private void loadPedidos() {
+
+    public void loadPedidos() {
         this.containerListPedidos.removeAll();
 
         // Set pedidos
-        this.pedidos = (ArrayList <Pedido>) WSManager.getPedidos();
+        this.pedidos = (ArrayList<Pedido>) WSManager.getPedidos();
 
         for (Pedido pedido : pedidos) {
             PanelPedido panelPedido = new PanelPedido(pedido);
@@ -106,7 +103,7 @@ public class HomeOperador extends javax.swing.JFrame {
 
         this.containerListPedidos.revalidate();
         this.containerListPedidos.repaint();
-        
+
     }
 
     /**
@@ -126,6 +123,7 @@ public class HomeOperador extends javax.swing.JFrame {
         bntRepartidores = new javax.swing.JButton();
         btnLogout = new javax.swing.JButton();
         labelUsername = new javax.swing.JLabel();
+        bntRepartidores1 = new javax.swing.JButton();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         containerPedidos = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
@@ -224,6 +222,19 @@ public class HomeOperador extends javax.swing.JFrame {
         labelUsername.setText("NombreUsuario");
         labelUsername.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 
+        bntRepartidores1.setBackground(new java.awt.Color(0, 153, 255));
+        bntRepartidores1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        bntRepartidores1.setForeground(new java.awt.Color(255, 255, 255));
+        bntRepartidores1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icon-export.png"))); // NOI18N
+        bntRepartidores1.setText("Exportar");
+        bntRepartidores1.setBorder(null);
+        bntRepartidores1.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        bntRepartidores1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bntRepartidores1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -241,7 +252,8 @@ public class HomeOperador extends javax.swing.JFrame {
                                 .addComponent(btnPedidos, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(btnZonas, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(bntRepartidores, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(btnLogout, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                .addComponent(btnLogout, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(bntRepartidores1, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addContainerGap(21, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -257,7 +269,9 @@ public class HomeOperador extends javax.swing.JFrame {
                 .addComponent(btnZonas, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(bntRepartidores, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 192, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addComponent(bntRepartidores1, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 135, Short.MAX_VALUE)
                 .addComponent(btnLogout, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(17, 17, 17))
         );
@@ -275,6 +289,11 @@ public class HomeOperador extends javax.swing.JFrame {
         btnAddPedido.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnAddPedido.setForeground(new java.awt.Color(255, 255, 255));
         btnAddPedido.setText("Crear nuevo pedido");
+        btnAddPedido.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddPedidoActionPerformed(evt);
+            }
+        });
 
         scrollPedidos.setBackground(new java.awt.Color(255, 255, 255));
         scrollPedidos.setBorder(null);
@@ -329,6 +348,9 @@ public class HomeOperador extends javax.swing.JFrame {
         jTabbedPane1.addTab("Pedidos", containerPedidos);
 
         containerZonas.setBackground(new java.awt.Color(255, 255, 255));
+        containerZonas.setMaximumSize(new java.awt.Dimension(32767, 32767));
+        containerZonas.setMinimumSize(new java.awt.Dimension(0, 0));
+        containerZonas.setPreferredSize(new java.awt.Dimension(674, 555));
         containerZonas.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
@@ -342,10 +364,16 @@ public class HomeOperador extends javax.swing.JFrame {
         btnAddZona.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnAddZona.setForeground(new java.awt.Color(255, 255, 255));
         btnAddZona.setText("+ Agregar zona");
+        btnAddZona.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddZonaActionPerformed(evt);
+            }
+        });
         containerZonas.add(btnAddZona, new org.netbeans.lib.awtextra.AbsoluteConstraints(494, 71, 174, 32));
 
         scrollZonas.setBackground(new java.awt.Color(255, 255, 255));
         scrollZonas.setBorder(null);
+        scrollZonas.setPreferredSize(new java.awt.Dimension(662, 430));
 
         containerListZonas.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -357,7 +385,7 @@ public class HomeOperador extends javax.swing.JFrame {
         );
         containerListZonasLayout.setVerticalGroup(
             containerListZonasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 428, Short.MAX_VALUE)
+            .addGap(0, 430, Short.MAX_VALUE)
         );
 
         scrollZonas.setViewportView(containerListZonas);
@@ -377,6 +405,11 @@ public class HomeOperador extends javax.swing.JFrame {
         btnAddRepa.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnAddRepa.setForeground(new java.awt.Color(255, 255, 255));
         btnAddRepa.setText("+ Agregar repartidor");
+        btnAddRepa.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddRepaActionPerformed(evt);
+            }
+        });
 
         jScrollPane1.setBackground(new java.awt.Color(255, 255, 255));
         jScrollPane1.setBorder(null);
@@ -468,6 +501,25 @@ public class HomeOperador extends javax.swing.JFrame {
         new Login().setVisible(true);
     }//GEN-LAST:event_btnLogoutActionPerformed
 
+    private void btnAddPedidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddPedidoActionPerformed
+        // TODO add your handling code here:
+        new CreatePedidoForm(this.operador, this).setVisible(true);
+    }//GEN-LAST:event_btnAddPedidoActionPerformed
+
+    private void btnAddZonaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddZonaActionPerformed
+        // TODO add your handling code here:
+        new CreateZonaForm(this).setVisible(true);
+    }//GEN-LAST:event_btnAddZonaActionPerformed
+
+    private void btnAddRepaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddRepaActionPerformed
+        // TODO add your handling code here:
+        new CreateRepartidorForm(this).setVisible(true);
+    }//GEN-LAST:event_btnAddRepaActionPerformed
+
+    private void bntRepartidores1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bntRepartidores1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_bntRepartidores1ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -505,6 +557,7 @@ public class HomeOperador extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bntRepartidores;
+    private javax.swing.JButton bntRepartidores1;
     private javax.swing.JButton btnAddPedido;
     private javax.swing.JButton btnAddRepa;
     private javax.swing.JButton btnAddZona;

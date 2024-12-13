@@ -589,6 +589,27 @@
             }
 
         }
+        
+        // Funcion para obtener las calles por id de la colonia
+        public function getCallesByColonia($idColonia){
+            $link = $this->open();
+            $query = "SELECT * FROM calle WHERE idColonia = $idColonia";
+            $result = mysqli_query($link, $query);
+            
+            if($result){
+                $calles = [];
+                while($row = mysqli_fetch_assoc($result)){
+                    $calles[] = $row;
+                }
+                $this->close($link);
+                
+                return $calles;
+            } else {
+                $this->close($link);
+                throw new Exception("Error al obtener las calles");
+            }
+
+        }
 
         // Funcion para insertar una calle 
         public function createCalle($nombre, $descripcion = null, $idColonia) {
