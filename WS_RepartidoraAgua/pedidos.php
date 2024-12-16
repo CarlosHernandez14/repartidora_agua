@@ -58,8 +58,9 @@
                 $prioridad = isset($data['prioridad']) ? filter_var($data['prioridad'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) : null;
                 $idRepartidor = $data['idRepartidor'] ?? null;
                 $idOperador = $data['idOperador'];
+                $fecha_entrega = $data['fecha_entrega'] ?? null;
 
-                $pedido = $db->createPedido($idZona, $cantidad_garrafones, $fecha, $estado, $prioridad, $idRepartidor, $idOperador);
+                $pedido = $db->createPedido($idZona, $cantidad_garrafones, $fecha, $estado, $prioridad, $idRepartidor, $idOperador, $fecha_entrega);
 
                 echo json_encode([
                     'OK' => true,
@@ -81,9 +82,10 @@
                 $estado = $data['estado'] ?? null;
                 $prioridad = $data['prioridad'] ?? null;
                 $idRepartidor = $data['idRepartidor'] ?? null;
+                $fecha_entrega = $data['fecha_entrega'] ?? null;
 
 
-                $pedido = $db->updatePedido($idPedido, $idZona, $cantidad_garrafones, $fecha, $estado, $prioridad, $idRepartidor);
+                $pedido = $db->updatePedido($idPedido, $idZona, $cantidad_garrafones, $fecha, $estado, $prioridad, $idRepartidor, $fecha_entrega);
 
                 echo json_encode([
                     'OK' => true,

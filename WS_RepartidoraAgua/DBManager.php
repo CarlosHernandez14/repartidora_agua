@@ -1019,7 +1019,7 @@
         }
 
         // Funcion para insertar un pedido
-        public function createPedido($idZona, $cantidad_garrafones, $fecha = null, $estado = null, $prioridad = null, $idRepartidor = null, $idOperador) {
+        public function createPedido($idZona, $cantidad_garrafones, $fecha = null, $estado = null, $prioridad = null, $idRepartidor = null, $idOperador, $fecha_entrega = null) {
             $link = $this->open();
 
             $idRepartidor = is_null($idRepartidor) ? 'NULL' : $idRepartidor;
@@ -1032,12 +1032,26 @@
                 $prioridad = 0;
             }
 
-            $query = "INSERT INTO pedido (idZona, cantidad_garrafones, fecha, estado, prioridad, idRepartidor, idOperador) VALUES ($idZona, $cantidad_garrafones, '$fecha', '$estado', $prioridad, $idRepartidor, $idOperador)";
+            $query = "INSERT INTO pedido (idZona, cantidad_garrafones, fecha, estado, prioridad, idRepartidor, idOperador, fecha_entrega) VALUES ($idZona, $cantidad_garrafones, '$fecha', '$estado', $prioridad, $idRepartidor, $idOperador, '$fecha_entrega')";
             
             
             // Manejo de NULLS
             if (is_null($fecha)) {
-                $query = "INSERT INTO pedido (idZona, cantidad_garrafones, estado, prioridad, idRepartidor, idOperador) VALUES ($idZona, $cantidad_garrafones, '$estado', $prioridad, $idRepartidor, $idOperador)";  
+                $query = "INSERT INTO pedido (idZona, cantidad_garrafones, estado, prioridad, idRepartidor, idOperador, fecha_entrega) VALUES ($idZona, $cantidad_garrafones, '$estado', $prioridad, $idRepartidor, $idOperador, '$fecha_entrega')"; 
+            
+                // Si no se especifica la fecha de entrega, se quita del query
+                if (is_null($fecha_entrega)) {
+                    $query = "INSERT INTO pedido (idZona, cantidad_garrafones, estado, prioridad, idRepartidor, idOperador) VALUES ($idZona, $cantidad_garrafones, '$estado', $prioridad, $idRepartidor, $idOperador)";
+                }
+            }
+
+            if (is_null($fecha_entrega)) {
+                $query = "INSERT INTO pedido (idZona, cantidad_garrafones, fecha, estado, prioridad, idRepartidor, idOperador) VALUES ($idZona, $cantidad_garrafones, '$fecha', '$estado', $prioridad, $idRepartidor, $idOperador)";
+            
+                // Si no se especifica la fecha, se quita del query
+                if (is_null($fecha)) {
+                    $query = "INSERT INTO pedido (idZona, cantidad_garrafones, estado, prioridad, idRepartidor, idOperador) VALUES ($idZona, $cantidad_garrafones, '$estado', $prioridad, $idRepartidor, $idOperador)";
+                }
             }
 
             $result = mysqli_query($link, $query);
@@ -1059,7 +1073,7 @@
         }
 
         // Funcion para actualizar un pedido
-        public function updatePedido($id, $idZona = null, $cantidad_garrafones = null, $fecha = null, $estado = null, $prioridad = null, $idRepartidor = null) {
+        public function updatePedido($id, $idZona = null, $cantidad_garrafones = null, $fecha = null, $estado = null, $prioridad = null, $idRepartidor = null, $fecha_entrega = null){
             $link = $this->open();
 
             // Verificamos que el pedido exista primero
@@ -1097,11 +1111,15 @@
                 $idRepartidor = $pedido['idRepartidor'];
             }
 
+            if($fecha_entrega === null){
+                $fecha_entrega = $pedido['fecha_entrega'];
+            }
+
             // if($idOperador === null){
             //     $idOperador = $pedido['idOperador'];
             // }
 
-            $query = "UPDATE pedido SET idZona = $idZona, cantidad_garrafones = $cantidad_garrafones, fecha = '$fecha', estado = '$estado', prioridad = $prioridad, idRepartidor = $idRepartidor WHERE idPedido = $id";
+            $query = "UPDATE pedido SET idZona = $idZona, cantidad_garrafones = $cantidad_garrafones, fecha = '$fecha', estado = '$estado', prioridad = $prioridad, idRepartidor = $idRepartidor, fecha_entrega = '$fecha_entrega' WHERE idPedido = $id";
             $result = mysqli_query($link, $query);
             
             if($result){
@@ -1118,6 +1136,7 @@
 
 
     }
+    
 
 
 ?>
