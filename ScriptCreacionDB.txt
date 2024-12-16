@@ -19,5 +19,5 @@ CREATE TABLE Colonia ( idColonia INT PRIMARY KEY AUTO_INCREMENT, nombre VARCHAR(
 CREATE TABLE Calle ( idCalle INT PRIMARY KEY AUTO_INCREMENT, nombre VARCHAR(100) NOT NULL, descripcion VARCHAR(200), idColonia INT NOT NULL, FOREIGN KEY (idColonia) REFERENCES Colonia (idColonia) );
 
 
-CREATE TABLE Pedido ( idPedido INT PRIMARY KEY AUTO_INCREMENT, idZona INT NOT NULL, cantidad_garrafones INT NOT NULL, fecha DATE DEFAULT CURRENT_DATE, estado ENUM('PENDIENTE', 'ENTREGADO') NOT NULL, prioridad BOOLEAN DEFAULT FALSE, idRepartidor INT, idOperador INT, FOREIGN KEY (idZona) REFERENCES Zona (idZona), FOREIGN KEY (idRepartidor) REFERENCES Repartidor (idRepartidor), FOREIGN KEY (idOperador) REFERENCES Operador (idOperador) );
+CREATE TABLE Pedido ( idPedido INT PRIMARY KEY AUTO_INCREMENT, idZona INT NOT NULL, cantidad_garrafones INT NOT NULL, fecha DATE DEFAULT CURRENT_DATE, fecha_entrega DATE DEFAULT CURRENT_DATE, estado ENUM('PENDIENTE', 'ENTREGADO') NOT NULL, prioridad BOOLEAN DEFAULT FALSE, idRepartidor INT, idOperador INT, FOREIGN KEY (idZona) REFERENCES Zona (idZona), FOREIGN KEY (idRepartidor) REFERENCES Repartidor (idRepartidor), FOREIGN KEY (idOperador) REFERENCES Operador (idOperador) );
 

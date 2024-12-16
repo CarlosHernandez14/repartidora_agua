@@ -4,6 +4,7 @@
  */
 package com.mycompany.views.operador;
 
+import com.mycompany.dao.Sucursal;
 import com.mycompany.dao.WSManager;
 import com.mycompany.domain.Colonia;
 import com.mycompany.domain.Zona;
@@ -27,6 +28,7 @@ import org.jxmapviewer.viewer.TileFactoryInfo;
 import org.jxmapviewer.viewer.Waypoint;
 import org.jxmapviewer.viewer.WaypointPainter;
 import javax.swing.Box;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -58,6 +60,8 @@ public class PanelZona extends RoundedPanel {
         initColonias();
         
         initMap();
+        
+        cargarDistancia();
     }
 
     private void initData() {
@@ -127,6 +131,14 @@ public class PanelZona extends RoundedPanel {
         this.containerColonias.revalidate();
         this.containerColonias.repaint();
     }
+    
+    private void cargarDistancia() {
+        
+        double distancia = this.zona.calcularDistancia(Sucursal.COORDENADAS_X, Sucursal.COORDENADAS_Y);
+        
+        this.labelDistancia.setText(String.valueOf(distancia).substring(0, 3) + " km");
+        
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -147,6 +159,8 @@ public class PanelZona extends RoundedPanel {
         scrollColonias = new javax.swing.JScrollPane();
         containerColonias = new javax.swing.JPanel();
         btnAddCol = new javax.swing.JButton();
+        labelNombreZona1 = new javax.swing.JLabel();
+        labelDistancia = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(242, 242, 242));
         setMaximumSize(new java.awt.Dimension(3000, 243));
@@ -230,6 +244,14 @@ public class PanelZona extends RoundedPanel {
             }
         });
 
+        labelNombreZona1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        labelNombreZona1.setForeground(new java.awt.Color(102, 102, 102));
+        labelNombreZona1.setText("Distancia:");
+
+        labelDistancia.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        labelDistancia.setForeground(new java.awt.Color(102, 102, 102));
+        labelDistancia.setText("12424");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -243,14 +265,19 @@ public class PanelZona extends RoundedPanel {
                     .addGroup(layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(scrollColonias))
-                    .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(labelNombreZona, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(labelColonia, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btnAddCol, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(btnAddCol, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(labelNombreZona, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(labelNombreZona1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(labelDistancia)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(216, 216, 216)
@@ -264,7 +291,10 @@ public class PanelZona extends RoundedPanel {
             .addComponent(containerBackgroundMap, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(labelNombreZona)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(labelNombreZona)
+                    .addComponent(labelNombreZona1)
+                    .addComponent(labelDistancia))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
@@ -296,7 +326,9 @@ public class PanelZona extends RoundedPanel {
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JLabel labelColonia;
     private javax.swing.JLabel labelCoordenadas;
+    private javax.swing.JLabel labelDistancia;
     private javax.swing.JLabel labelNombreZona;
+    private javax.swing.JLabel labelNombreZona1;
     private javax.swing.JScrollPane scrollColonias;
     // End of variables declaration//GEN-END:variables
 }

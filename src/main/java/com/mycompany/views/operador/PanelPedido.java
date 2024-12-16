@@ -4,12 +4,15 @@
  */
 package com.mycompany.views.operador;
 
+import com.mycompany.dao.Sucursal;
 import com.mycompany.dao.WSManager;
 import com.mycompany.domain.EstadoPedido;
 import com.mycompany.domain.Pedido;
+import com.mycompany.domain.Zona;
 import com.mycompany.vistas.RoundedPanel;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
+import java.util.ArrayList;
 import javax.swing.JOptionPane;
 
 /**
@@ -44,15 +47,38 @@ public class PanelPedido extends RoundedPanel {
         // Set selects
         this.comboEstadoPedido.setSelectedItem(this.pedido.getEstado().toString());
         this.comboPrioridad.setSelectedItem(this.pedido.isPrioridad() ? "ALTA" : "NORMAL");
+        
+        // Seteamos la fecha
+        this.dateChooser.setDate(this.pedido.getFecha_entrega());
 
         // Desactivamos fields y selects
         this.fieldCantidadGarr.setEnabled(isEditing);
         this.comboEstadoPedido.setEnabled(isEditing);
         this.comboPrioridad.setEnabled(isEditing);
+        this.dateChooser.setEnabled(isEditing);
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy MM dd");
         this.labelFecha.setText("FECHA DEL PEDIDO: " + this.pedido.getFecha().toLocalDate().format(formatter));
+        
+        cargarDistancia();
 
+    }
+    
+    private void cargarDistancia() {
+        // Cargamos las zonas
+        ArrayList<Zona> zonas = (ArrayList<Zona>) WSManager.getZonas();
+    
+        Zona zonaPedido = zonas.stream().filter(z -> z.getIdZona() == pedido.getIdZona()).findFirst().orElse(null);
+
+        if (zonaPedido == null) {
+            JOptionPane.showMessageDialog(null, "No se pudo cargar la distancia de la zona con la sucursal");
+            return;
+        }
+        
+        double distancia = zonaPedido.calcularDistancia(Sucursal.COORDENADAS_X, Sucursal.COORDENADAS_Y);
+        
+        this.fieldDistancia.setText(String.valueOf(distancia).substring(0, 3) + " km");
+        
     }
 
     /**
@@ -76,9 +102,13 @@ public class PanelPedido extends RoundedPanel {
         jSeparator1 = new javax.swing.JSeparator();
         labelFecha = new javax.swing.JLabel();
         btnEditarPedido = new javax.swing.JButton();
+        labelIdPedido5 = new javax.swing.JLabel();
+        dateChooser = new com.toedter.calendar.JDateChooser();
+        labelIdPedido6 = new javax.swing.JLabel();
+        fieldDistancia = new javax.swing.JTextField();
 
         setBackground(new java.awt.Color(242, 242, 242));
-        setMaximumSize(new java.awt.Dimension(32767, 240));
+        setMaximumSize(new java.awt.Dimension(32767, 300));
         setName(""); // NOI18N
 
         containerHeader.setBackground(new java.awt.Color(0, 153, 255));
@@ -160,6 +190,29 @@ public class PanelPedido extends RoundedPanel {
             }
         });
 
+        labelIdPedido5.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        labelIdPedido5.setForeground(new java.awt.Color(0, 153, 255));
+        labelIdPedido5.setText("Fecha de entrega:");
+
+        dateChooser.setBackground(new java.awt.Color(242, 242, 242));
+        dateChooser.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+
+        labelIdPedido6.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        labelIdPedido6.setForeground(new java.awt.Color(0, 153, 255));
+        labelIdPedido6.setText("Distancia de la sucursal:");
+
+        fieldDistancia.setEditable(false);
+        fieldDistancia.setBackground(new java.awt.Color(242, 242, 242));
+        fieldDistancia.setFont(new java.awt.Font("Segoe UI", 3, 12)); // NOI18N
+        fieldDistancia.setForeground(new java.awt.Color(0, 153, 255));
+        fieldDistancia.setText("22");
+        fieldDistancia.setEnabled(false);
+        fieldDistancia.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                fieldDistanciaActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -168,27 +221,38 @@ public class PanelPedido extends RoundedPanel {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jSeparator1))
+                    .addComponent(labelFecha, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
                         .addGap(21, 21, 21)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(labelIdPedido4)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(comboPrioridad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(labelIdPedido3)
-                                .addGap(18, 18, 18)
-                                .addComponent(comboEstadoPedido, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(labelIdPedido1)
                                 .addGap(18, 18, 18)
                                 .addComponent(fieldCantidadGarr, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(btnEditarPedido, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jSeparator1)))
+                                .addComponent(btnEditarPedido, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(labelIdPedido3)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(comboEstadoPedido, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(labelIdPedido5)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(dateChooser, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(labelIdPedido4)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(comboPrioridad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(labelIdPedido6)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(fieldDistancia, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(0, 0, Short.MAX_VALUE)))))
                 .addContainerGap())
-            .addComponent(labelFecha, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -206,12 +270,18 @@ public class PanelPedido extends RoundedPanel {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(labelIdPedido4)
-                    .addComponent(comboPrioridad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(comboPrioridad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(labelIdPedido6)
+                    .addComponent(fieldDistancia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(labelIdPedido5)
+                    .addComponent(dateChooser, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(labelFecha)
-                .addContainerGap(10, Short.MAX_VALUE))
+                .addGap(14, 14, 14))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -244,10 +314,14 @@ public class PanelPedido extends RoundedPanel {
             String selectedPrioridad = this.comboPrioridad.getSelectedItem().toString();
             boolean prioridad = selectedPrioridad.equalsIgnoreCase("ALTA");
             
+            
+            java.sql.Date fechaEntregaSQL = new java.sql.Date(this.dateChooser.getDate().getTime());
+            
             Pedido updatedPedido = this.pedido;
             updatedPedido.setCantidadGarrafones(cantidadGarrafones);
             updatedPedido.setEstado(estado);
             updatedPedido.setPrioridad(prioridad);
+            updatedPedido.setFecha_entrega(fechaEntregaSQL);
             // Actualizamos los datos
             int idPedido = WSManager.actualizarPedido(updatedPedido);
             
@@ -264,13 +338,19 @@ public class PanelPedido extends RoundedPanel {
 
     }//GEN-LAST:event_btnEditarPedidoActionPerformed
 
+    private void fieldDistanciaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fieldDistanciaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_fieldDistanciaActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnEditarPedido;
     private javax.swing.JComboBox<String> comboEstadoPedido;
     private javax.swing.JComboBox<String> comboPrioridad;
     private javax.swing.JPanel containerHeader;
+    private com.toedter.calendar.JDateChooser dateChooser;
     private javax.swing.JTextField fieldCantidadGarr;
+    private javax.swing.JTextField fieldDistancia;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JLabel labelFecha;
@@ -278,5 +358,7 @@ public class PanelPedido extends RoundedPanel {
     private javax.swing.JLabel labelIdPedido1;
     private javax.swing.JLabel labelIdPedido3;
     private javax.swing.JLabel labelIdPedido4;
+    private javax.swing.JLabel labelIdPedido5;
+    private javax.swing.JLabel labelIdPedido6;
     // End of variables declaration//GEN-END:variables
 }

@@ -949,10 +949,15 @@ public class WSManager {
                 int idZona = Integer.parseInt((String) jsonPedido.get("idZona"));
                 int cantidadGarrafones = Integer.parseInt((String) jsonPedido.get("cantidad_garrafones"));
                 String fecha = (String) jsonPedido.get("fecha");
+                String fechaEntregaString = (String) jsonPedido.get("fecha_entrega");
                 // Convertimos la fecha a un objeto Date
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                
                 LocalDate localDate = LocalDate.parse(fecha, formatter);
+                LocalDate localDateEntrega = LocalDate.parse(fechaEntregaString, formatter);
+                
                 Date date = Date.valueOf(localDate);
+                Date dateEntrega = Date.valueOf(localDateEntrega);
 
                 String estado = (String) jsonPedido.get("estado"); // ENUM en la BD
 
@@ -970,7 +975,7 @@ public class WSManager {
 
                 // Creeamos el pedido para agreaar a la lista
                 Pedido pedido = new Pedido(idPedido, idZona, cantidadGarrafones, date, estadoPedido, prioridad,
-                        idRepartidor, idOperador);
+                        idRepartidor, idOperador, dateEntrega);
 
                 // Lo agregamos a la lista
                 pedidos.add(pedido);
@@ -1018,10 +1023,15 @@ public class WSManager {
                 int idZona = Integer.parseInt((String) jsonPedido.get("idZona"));
                 int cantidadGarrafones = Integer.parseInt((String) jsonPedido.get("cantidad_garrafones"));
                 String fecha = (String) jsonPedido.get("fecha");
+                String fechaEntrega = (String) jsonPedido.get("fecha_entrega");
                 // Convertimos la fecha a un objeto Date
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                
                 LocalDate localDate = LocalDate.parse(fecha, formatter);
+                LocalDate localDateEntrega = LocalDate.parse(fechaEntrega, formatter);
+                
                 Date date = Date.valueOf(localDate);
+                Date dateEntrega = Date.valueOf(localDateEntrega);
 
                 String estado = (String) jsonPedido.get("estado"); // ENUM en la BD
 
@@ -1038,7 +1048,7 @@ public class WSManager {
 
                 // Creeamos el pedido para agreaar a la lista
                 Pedido pedido = new Pedido(idPedido, idZona, cantidadGarrafones, date, estadoPedido, prioridad,
-                        idRepartidor, idOperador);
+                        idRepartidor, idOperador, dateEntrega);
 
                 // Lo agregamos a la lista
                 pedidos.add(pedido);
@@ -1080,6 +1090,9 @@ public class WSManager {
             }
             if (pedido.getIdRepartidor() != 0) {
                 jsonPedido.put("idRepartidor", pedido.getIdRepartidor());
+            }
+            if (pedido.getFecha_entrega() != null) {
+                jsonPedido.put("fecha_entrega", pedido.getFecha_entrega().toString());
             }
 
 
@@ -1133,6 +1146,9 @@ public class WSManager {
             }
             if (pedido.getIdRepartidor() != 0) {
                 jsonPedido.put("idRepartidor", pedido.getIdRepartidor());
+            }
+            if (pedido.getFecha_entrega() != null) {
+                jsonPedido.put("fecha_entrega", pedido.getFecha_entrega().toString());
             }
 
 

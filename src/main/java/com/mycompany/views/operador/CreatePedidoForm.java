@@ -91,6 +91,8 @@ public class CreatePedidoForm extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         comboRepartidores = new javax.swing.JComboBox<>();
         btnCrearPedido = new javax.swing.JButton();
+        jLabel5 = new javax.swing.JLabel();
+        dateChooser = new com.toedter.calendar.JDateChooser();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -158,6 +160,13 @@ public class CreatePedidoForm extends javax.swing.JFrame {
             }
         });
 
+        jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel5.setForeground(new java.awt.Color(0, 153, 255));
+        jLabel5.setText("Fecha estimada de entrega");
+
+        dateChooser.setBackground(new java.awt.Color(242, 242, 242));
+        dateChooser.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -166,13 +175,15 @@ public class CreatePedidoForm extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(37, 37, 37)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel5)
                     .addComponent(jLabel4)
                     .addComponent(jLabel3)
                     .addComponent(jLabel2)
                     .addComponent(fieldCantidadGarr)
                     .addComponent(comboZonas, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(comboRepartidores, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnCrearPedido, javax.swing.GroupLayout.DEFAULT_SIZE, 302, Short.MAX_VALUE))
+                    .addComponent(btnCrearPedido, javax.swing.GroupLayout.DEFAULT_SIZE, 302, Short.MAX_VALUE)
+                    .addComponent(dateChooser, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(39, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -191,9 +202,13 @@ public class CreatePedidoForm extends javax.swing.JFrame {
                 .addComponent(jLabel4)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(comboRepartidores, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(46, 46, 46)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel5)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(dateChooser, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addComponent(btnCrearPedido, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 37, Short.MAX_VALUE))
+                .addGap(30, 30, 30))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -228,6 +243,18 @@ public class CreatePedidoForm extends javax.swing.JFrame {
             return;
         }
 
+        // Validamos que el resto de los campos no esten vacios
+        if(selectedZona.isEmpty()){
+            JOptionPane.showMessageDialog(this, "Debes seleccionar una zona", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Validamos que haya seleccionado una fecha de entrega 
+        if(this.dateChooser.getDate() == null){
+            JOptionPane.showMessageDialog(this, "Debes seleccionar una fecha de entrega", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
         // Obtenemos el id de la zona seleccionada
         int idZona = 0;
         for (Zona zona : zonas) {
@@ -249,6 +276,11 @@ public class CreatePedidoForm extends javax.swing.JFrame {
         // Creamos el pedido
         Pedido pedido = new Pedido(idZona, cantidadGarr, this.operador.getIdOperador());
         pedido.setIdRepartidor(idRepartidor);
+        
+        
+        
+        java.sql.Date fechaEntregaSQL = new java.sql.Date(this.dateChooser.getDate().getTime());
+        pedido.setFecha_entrega(fechaEntregaSQL);
 
         // Enviamos el pedido al servidor
         int idPedido = WSManager.guardarPedido(pedido);
@@ -302,11 +334,13 @@ public class CreatePedidoForm extends javax.swing.JFrame {
     private javax.swing.JButton btnCrearPedido;
     private javax.swing.JComboBox<String> comboRepartidores;
     private javax.swing.JComboBox<String> comboZonas;
+    private com.toedter.calendar.JDateChooser dateChooser;
     private javax.swing.JTextField fieldCantidadGarr;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel panelHeader;
     // End of variables declaration//GEN-END:variables

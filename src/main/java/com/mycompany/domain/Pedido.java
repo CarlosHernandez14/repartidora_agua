@@ -22,12 +22,13 @@ public class Pedido implements Serializable{
     private boolean prioridad; // TRUE EN CASO DE SER PRIORITARIO
     private int idRepartidor;
     private int idOperador;
+    private Date fecha_entrega;
 
     public Pedido() {
     }
 
     // CONSTRUCTOR LECTURA
-    public Pedido(int idPedido, int idZona, int cantidadGarrafones, Date fecha, EstadoPedido estado, boolean prioridad, int idRepartidor, int idOperador) {
+    public Pedido(int idPedido, int idZona, int cantidadGarrafones, Date fecha, EstadoPedido estado, boolean prioridad, int idRepartidor, int idOperador, Date fecha_entrega) {
         this.idPedido = idPedido;
         this.idZona = idZona;
         this.cantidadGarrafones = cantidadGarrafones;
@@ -36,6 +37,7 @@ public class Pedido implements Serializable{
         this.prioridad = prioridad;
         this.idRepartidor = idRepartidor;
         this.idOperador = idOperador;
+        this.fecha_entrega = fecha_entrega;
     }
 
     // CONSTRUCTOR CREACION
@@ -113,6 +115,14 @@ public class Pedido implements Serializable{
         this.idOperador = idOperador;
     }
 
+    public Date getFecha_entrega() {
+        return fecha_entrega;
+    }
+
+    public void setFecha_entrega(Date fecha_entrega) {
+        this.fecha_entrega = fecha_entrega;
+    }
+    
     @Override
     public String toString() {
         return "Pedido{" + "idPedido=" + idPedido + ", idZona=" + idZona + ", cantidadGarrafones=" + cantidadGarrafones + ", fecha=" + fecha + ", estado=" + estado + ", prioridad=" + prioridad + ", idRepartidor=" + idRepartidor + ", idOperador=" + idOperador + '}';

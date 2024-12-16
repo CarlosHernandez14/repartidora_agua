@@ -4,7 +4,10 @@
  */
 package com.mycompany.views.operador;
 
+import com.mycompany.dao.DaoExportData;
+import com.mycompany.dao.Sucursal;
 import com.mycompany.dao.WSManager;
+import com.mycompany.domain.EstadoPedido;
 import com.mycompany.domain.Operador;
 import com.mycompany.domain.Pedido;
 import com.mycompany.domain.Repartidor;
@@ -14,6 +17,7 @@ import com.mycompany.vistas.PanelImageRedondeado;
 import java.awt.Dimension;
 import java.util.ArrayList;
 import javax.swing.BoxLayout;
+import javax.swing.JOptionPane;
 import javax.swing.Box;
 
 public class HomeOperador extends javax.swing.JFrame {
@@ -70,6 +74,7 @@ public class HomeOperador extends javax.swing.JFrame {
         this.containerListZonas.revalidate();
         this.containerListZonas.repaint();
     }
+    
 
     public void loadRepartidores() {
 
@@ -93,6 +98,9 @@ public class HomeOperador extends javax.swing.JFrame {
 
         // Set pedidos
         this.pedidos = (ArrayList<Pedido>) WSManager.getPedidos();
+        
+        verificarEntregas();
+        
 
         for (Pedido pedido : pedidos) {
             PanelPedido panelPedido = new PanelPedido(pedido);
@@ -106,6 +114,57 @@ public class HomeOperador extends javax.swing.JFrame {
 
     }
 
+    private void verificarEntregas() {
+        // Verificamos si no hay pedidos vencidos
+        for (Pedido pedido : this.pedidos) {
+            //System.out.println("DENTRO DEL CICLO");
+            if (pedido.getEstado() == EstadoPedido.PENDIENTE && pedido.getFecha_entrega().before(new java.util.Date())) {
+                //System.out.println("DENTRO DEL IF");
+                // Obtenemos la zona del pedido para verificar la distancia con la sucursal
+                ArrayList<Zona> zonas = (ArrayList<Zona>) WSManager.getZonas();
+                Zona zonaPedido = zonas.stream().filter(z -> z.getIdZona() == pedido.getIdZona()).findFirst().orElse(null);
+
+                if (zonaPedido == null) {
+                    System.out.println("No se encontro la zona del pedido");
+                    continue;
+                }
+
+                double distancia = zonaPedido.calcularDistancia(Sucursal.COORDENADAS_X, Sucursal.COORDENADAS_Y);
+                
+                //System.out.println("DISTANCIA CON LA SUCRUSAL: " + distancia);
+
+                if (distancia <= 10) {
+                    // El pedido está vencido y no se ha entregado
+                    pedido.setPrioridad(true);
+                    // Actualizamos la fecha de entrega a mañana
+                    java.util.Date nuevaFecha = new java.util.Date(System.currentTimeMillis() + 24 * 60 * 60 * 1000);
+
+                    pedido.setFecha_entrega(new java.sql.Date(nuevaFecha.getTime()));
+
+                    // Actualizamos el pedido en el WS
+                    int idPedido = WSManager.actualizarPedido(pedido);
+
+                    if (idPedido == -1) {
+                        JOptionPane.showMessageDialog(this, "Error al actualizar el pedido");
+                        continue;
+                    }
+
+                    JOptionPane.showMessageDialog(this, "El pedido " + pedido.getIdPedido() 
+                            + " ha sido marcado como prioritario y se ha actualizado la fecha de entrega a mañana");
+
+                    // Actualizamos el pedido en la lista de pedidos
+                    Pedido pedidoActualizado = this.pedidos.stream().filter(p -> p.getIdPedido() == idPedido).findFirst().orElse(null);
+
+                    if (pedidoActualizado != null) {
+                        pedidoActualizado.setFecha_entrega(pedido.getFecha_entrega());
+                        pedidoActualizado.setPrioridad(pedido.isPrioridad());
+                    }
+                    
+                }
+            }
+        }
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -115,6 +174,9 @@ public class HomeOperador extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        menuExportar = new javax.swing.JPopupMenu();
+        itemExcelZonas = new javax.swing.JMenuItem();
+        itemRepasPedidos = new javax.swing.JMenuItem();
         containerHome = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         btnPedidos = new javax.swing.JButton();
@@ -123,7 +185,7 @@ public class HomeOperador extends javax.swing.JFrame {
         bntRepartidores = new javax.swing.JButton();
         btnLogout = new javax.swing.JButton();
         labelUsername = new javax.swing.JLabel();
-        bntRepartidores1 = new javax.swing.JButton();
+        btnExport = new javax.swing.JButton();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         containerPedidos = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
@@ -143,6 +205,22 @@ public class HomeOperador extends javax.swing.JFrame {
         btnAddRepa = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         containerListRepartidores = new javax.swing.JPanel();
+
+        itemExcelZonas.setText("Excel de zonas con mas pedidos");
+        itemExcelZonas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemExcelZonasActionPerformed(evt);
+            }
+        });
+        menuExportar.add(itemExcelZonas);
+
+        itemRepasPedidos.setText("PDF de Repartidores");
+        itemRepasPedidos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemRepasPedidosActionPerformed(evt);
+            }
+        });
+        menuExportar.add(itemRepasPedidos);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -222,16 +300,16 @@ public class HomeOperador extends javax.swing.JFrame {
         labelUsername.setText("NombreUsuario");
         labelUsername.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 
-        bntRepartidores1.setBackground(new java.awt.Color(0, 153, 255));
-        bntRepartidores1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        bntRepartidores1.setForeground(new java.awt.Color(255, 255, 255));
-        bntRepartidores1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icon-export.png"))); // NOI18N
-        bntRepartidores1.setText("Exportar");
-        bntRepartidores1.setBorder(null);
-        bntRepartidores1.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        bntRepartidores1.addActionListener(new java.awt.event.ActionListener() {
+        btnExport.setBackground(new java.awt.Color(0, 153, 255));
+        btnExport.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnExport.setForeground(new java.awt.Color(255, 255, 255));
+        btnExport.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icon-export.png"))); // NOI18N
+        btnExport.setText("Exportar");
+        btnExport.setBorder(null);
+        btnExport.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        btnExport.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bntRepartidores1ActionPerformed(evt);
+                btnExportActionPerformed(evt);
             }
         });
 
@@ -253,7 +331,7 @@ public class HomeOperador extends javax.swing.JFrame {
                                 .addComponent(btnZonas, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(bntRepartidores, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(btnLogout, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(bntRepartidores1, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                .addComponent(btnExport, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addContainerGap(21, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -270,7 +348,7 @@ public class HomeOperador extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(bntRepartidores, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(bntRepartidores1, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnExport, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 135, Short.MAX_VALUE)
                 .addComponent(btnLogout, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(17, 17, 17))
@@ -348,7 +426,6 @@ public class HomeOperador extends javax.swing.JFrame {
         jTabbedPane1.addTab("Pedidos", containerPedidos);
 
         containerZonas.setBackground(new java.awt.Color(255, 255, 255));
-        containerZonas.setMaximumSize(new java.awt.Dimension(32767, 32767));
         containerZonas.setMinimumSize(new java.awt.Dimension(0, 0));
         containerZonas.setPreferredSize(new java.awt.Dimension(674, 555));
         containerZonas.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -516,9 +593,24 @@ public class HomeOperador extends javax.swing.JFrame {
         new CreateRepartidorForm(this).setVisible(true);
     }//GEN-LAST:event_btnAddRepaActionPerformed
 
-    private void bntRepartidores1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bntRepartidores1ActionPerformed
+    private void btnExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_bntRepartidores1ActionPerformed
+        this.menuExportar.show(this.btnExport, this.btnExport.getWidth(), 0);
+    }//GEN-LAST:event_btnExportActionPerformed
+
+    private void itemExcelZonasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemExcelZonasActionPerformed
+        // TODO add your handling code here:
+        
+        DaoExportData.generarReporteExcelZonas(this.zonas, this.pedidos);
+        
+        
+    }//GEN-LAST:event_itemExcelZonasActionPerformed
+
+    private void itemRepasPedidosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemRepasPedidosActionPerformed
+        // TODO add your handling code here:
+        
+        DaoExportData.generarReportePDFRepartidores(this.repartidores, this.pedidos);
+    }//GEN-LAST:event_itemRepasPedidosActionPerformed
 
     /**
      * @param args the command line arguments
@@ -557,10 +649,10 @@ public class HomeOperador extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bntRepartidores;
-    private javax.swing.JButton bntRepartidores1;
     private javax.swing.JButton btnAddPedido;
     private javax.swing.JButton btnAddRepa;
     private javax.swing.JButton btnAddZona;
+    private javax.swing.JButton btnExport;
     private javax.swing.JButton btnLogout;
     private javax.swing.JButton btnPedidos;
     private javax.swing.JButton btnZonas;
@@ -571,6 +663,8 @@ public class HomeOperador extends javax.swing.JFrame {
     private javax.swing.JPanel containerPedidos;
     private javax.swing.JPanel containerRepartidores;
     private javax.swing.JPanel containerZonas;
+    private javax.swing.JMenuItem itemExcelZonas;
+    private javax.swing.JMenuItem itemRepasPedidos;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
@@ -581,6 +675,7 @@ public class HomeOperador extends javax.swing.JFrame {
     private javax.swing.JSeparator jSeparator3;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JLabel labelUsername;
+    private javax.swing.JPopupMenu menuExportar;
     private org.edisoncor.gui.panel.PanelImage panelImageLogo7;
     private javax.swing.JScrollPane scrollPedidos;
     private javax.swing.JScrollPane scrollZonas;
